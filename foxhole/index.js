@@ -60,9 +60,9 @@ function renderAccountPage(userInfo) {
 }
 
 function handleLogoffClick() {
+  LogOff();
   renderHomePage();
   showPanel('homeTab');
-  logOff();
 }
 
 function handleCreateSurveyClick() {
@@ -150,7 +150,7 @@ function LogOff() {
     dataType: 'json',
     success: function (msg) {
       if (msg.d) {
-        showPanel('accountTab');
+        showPanel('homeTab');
         userInfo = undefined;
       } else {
         alert('something went wrong with log off');
