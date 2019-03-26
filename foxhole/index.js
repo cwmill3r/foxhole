@@ -74,8 +74,7 @@ function handleCreateSurveyClick() {
 
 function renderSurveyPage() {
     document.querySelector('#surveyTab').innerHTML =
-        `
-        <style>
+        `<style>
         body {
 	          font-family: Arial;
 	        }
