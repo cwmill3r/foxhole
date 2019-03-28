@@ -6,6 +6,7 @@ const contentPanels = [
   'homeTab',
   'accountTab',
   'surveyTab'
+  'manageTab'
 ];
 
 // login form submit handler
@@ -27,7 +28,26 @@ function renderHomePage() {
   document.querySelector('#homeTab').innerHTML = 
     ` <h2 class="w3-margin w3-text-indigo">Hi there!</h2>
       <h2 class="w3-margin w3-text-indigo">Welcome to Foxhole</h2>
+      <img src="https://openclipart.org/download/279046/Cute-Fox-Without-Background.svg" />
       <button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top" onclick="document.getElementById('loginModal').style.display='block'" style="width:auto;">Login</button>`;
+}
+
+function renderAccountManagementPage() {
+  if (userInfo.admin == 1) {
+    document.querySelector('#manageTab').innerHTML =
+      `<div class="w3-container">
+        <h3 class="w3-text-teal">Accounts currently registered with Foxhole</h2>
+        <div class="w3-right">
+          <button onclick="renderAccountPage(userInfo)" id="returnButton">Return to your Account</button>
+        </div>
+       </div>
+       <br>`
+       GetAccounts();
+       showPanel('manageTab');
+  } else {
+      window.alert('Not an authorized user');
+  }      
+
 }
 
 function renderAccountPage(userInfo) {
@@ -37,6 +57,7 @@ function renderAccountPage(userInfo) {
       `<div class="w3-container">
         <img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
         <h3 class="w3-text-teal">hello ${userInfo.userName}</h3>
+        <a style="text-decoration: underline; cursor: pointer;" class="w3-text-indigo" onClick="renderAccountManagementPage()" id="manageAccount-button">Manage Accounts</a>
         <a style="text-decoration: underline; cursor: pointer;" class="w3-text-indigo" onClick="handleLogoffClick()" id="logoff-button">Logoff</a>
         <div class="w3-right">
           <button onclick="handleCreateSurveyClick(this)" id="createSurveyButton">create new survey</button>
@@ -61,9 +82,9 @@ function renderAccountPage(userInfo) {
 }
 
 function handleLogoffClick() {
+  LogOff();
   renderHomePage();
   showPanel('homeTab');
-  logOff();
 }
 
 function handleCreateSurveyClick() {
@@ -227,7 +248,7 @@ function LogOff() {
     dataType: 'json',
     success: function (msg) {
       if (msg.d) {
-        showPanel('accountTab');
+        showPanel('homeTab');
         userInfo = undefined;
       } else {
         alert('something went wrong with log off');
@@ -238,6 +259,26 @@ function LogOff() {
     }
   });
 }
+
+function GetAccounts() {
+    var webMethod = 'AccountServices.asmx/GetAccounts';
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        //data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            console.log(msg.d);
+            quizQuestions = msg.d;
+            return msg.d;
+        },
+        error: function (e) {
+            alert('Error getting questing from API');
+        }
+    });
+}
+
 
 // login form submit event listener
 document.querySelector('#loginForm').addEventListener('submit', function (e) {
