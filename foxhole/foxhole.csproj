@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Question.cs" />
+    <Compile Include="SurveyQuestion.cs" />
     <Compile Include="WrongAnswer.cs" />
   </ItemGroup>
   <ItemGroup>

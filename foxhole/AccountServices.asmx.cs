@@ -92,6 +92,63 @@ namespace foxhole
             return true;
         }
 
+        [WebMethod(EnableSession = true)]
+        public SurveyQuestion[] GetAllSurveyQuestions()
+        {
+            //LOGIC: get all questions without their answers first
+            DataTable sqlDt = new DataTable("question");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //select all the questions *this wont iclude wrong answers*
+            string sqlSelect = "select * from question";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            List<SurveyQuestion> questions = new List<SurveyQuestion>();
+
+            for(int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                questions.Add(new SurveyQuestion
+                {
+                    qID = Convert.ToInt32(sqlDt.Rows[i]["qID"]),
+                    text = sqlDt.Rows[i]["text"].ToString(),
+                });
+            }
+
+            return questions.ToArray();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
         [WebMethod(EnableSession = true)]
         public void RequestAccount(string uid, string pass, string firstName, string lastName, string email)
