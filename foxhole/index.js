@@ -5,7 +5,7 @@ let userInfo = undefined;
 const contentPanels = [
   'homeTab',
   'accountTab',
-  'surveyTab'
+  'surveyTab',
   'manageTab'
 ];
 
