@@ -168,7 +168,8 @@ function clearHomeTab() {
 
 // SENDING AN EMAIL STUFF
 var templateParams = {
-  surveyURL: 'localhost:50406?12345',
+  surveyURL: //`localhost:50406${surveyID}`,
+  emailList: //`${emailList}`
 };
 
 function sendTestEmail() {
