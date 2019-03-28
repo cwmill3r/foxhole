@@ -5,7 +5,7 @@ let userInfo = undefined;
 const contentPanels = [
   'homeTab',
   'accountTab',
-  'surveyTab'
+  'surveyTab',
   'manageTab'
 ];
 
@@ -189,8 +189,8 @@ function clearHomeTab() {
 
 // SENDING AN EMAIL STUFF
 var templateParams = {
-  surveyURL: //`localhost:50406${surveyID}`,
-  emailList: //`${emailList}`
+  //surveyURL: `localhost:50406${surveyID}`,
+  //emailList: `${emailList}`
 };
 
 function sendTestEmail() {
