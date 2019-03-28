@@ -5,6 +5,7 @@ let userInfo = undefined;
 const contentPanels = [
   'homeTab',
   'accountTab',
+  'surveyTab'
   'manageTab'
 ];
 
@@ -73,7 +74,7 @@ function renderAccountPage(userInfo) {
     //GetUserSurveys(userInfo.id);
   } else {
     // show pleb account
-    
+
   }
 
   // show the rendered page
@@ -87,7 +88,83 @@ function handleLogoffClick() {
 }
 
 function handleCreateSurveyClick() {
-  window.alert('create survey clicked');
+    window.alert('create survey clicked');
+    renderSurveyPage();
+    showPanel('surveyTab');
+}
+
+function renderSurveyPage() {
+    document.querySelector('#surveyTab').innerHTML =
+        `<style>
+        body {
+	          font-family: Arial;
+	        }
+
+	        #question, #recipient {
+	          width: 100%;
+	          padding: 12px 20px;
+	          margin: 8px 0;
+	          display: block;
+	          border: 1px solid #ccc;
+	          border-radius: 4px;
+	          box-sizing: border-box;
+	        }
+
+	        #anonymous {
+	          padding: 12px 20px;
+	          margin: 8px 0;
+	          display: block;
+	          border: 1px solid #ccc;
+	          border-radius: 4px;
+	          box-sizing: border-box;
+	        }
+
+	        input[type=submit] {
+	          width: 100%;
+	          background-color: #4CAF50;
+	          color: white;
+	          padding: 14px 20px;
+	          margin: 8px 0;
+	          border: none;
+	          border-radius: 4px;
+	          cursor: pointer;
+	        }
+
+	        input[type=submit]:hover {
+	          background-color: #45a049;
+	        }
+
+	        div.container {
+	          border-radius: 5px;
+	          background-color: #f2f2f2;
+	          padding: 20px;
+	        }
+        </style>
+
+        <div class="w3-container">
+	        <form id="surveyForm">
+                <div class="container">
+
+      	            <h3 style="text-align: center;">Create A New Survey</h3>
+
+                    <label for="ques"><b>Question</b></label>
+                    <select name="ques" id="question">
+        	            <option value="example1">Example 1</option>
+        	            <option value="example2">Example 2</option>
+        	            <option value="example3">Example 3</option>
+                    </select>
+
+                    <label for="anon"><b>Anonymous? (Check If Yes)</b></label>
+                    <input type="checkbox" name="anon" id="anonymous">
+
+		            <label for="recipient"><b>Survey Recipient (Email)</b></label>
+		            <input type="text" name="recipient" id="recipient">
+
+
+                    <input type="submit" value="Create Survey">
+                 </div>
+            </form>
+        </div>`
 }
 
 // magic show panel function
