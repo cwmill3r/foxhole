@@ -186,6 +186,80 @@ namespace foxhole
         }
 
 
+        // At first we are going to pass a single recipient and then later an array of recipients
+        [WebMethod(EnableSession = true)]
+        public int CreateSurvey(int qID, int privacy, int asking_eID, string date, int recipient_eID) //'YYYY-MM-DD'
+        {
+            int surveyID = -1; // This is the id of the survey we will return
+            int responseID = -1;
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
+            //does is tell mySql server to return the primary key of the last inserted row.
+            string sqlSelect = "insert into survey (qID, privacy, asking_eID, date) " +
+                "values(@qID, @privacy, @asking_eID, @date); SELECT LAST_INSERT_ID();";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@qID", qID);
+            sqlCommand.Parameters.AddWithValue("@privacy", privacy);
+            sqlCommand.Parameters.AddWithValue("@asking_eID", asking_eID);
+            sqlCommand.Parameters.AddWithValue("@date", HttpUtility.UrlDecode(date));
+
+            //this time, we're not using a data adapter to fill a data table.  We're just
+            //opening the connection, telling our command to "executescalar" which says basically
+            //execute the query and just hand me back the number the query returns (the ID, remember?).
+            //don't forget to close the connection!
+            sqlConnection.Open();
+            //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //by closing the connection and moving on
+            try
+            {
+                surveyID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                //here, you could use this accountID for additional queries regarding
+                //the requested account.  Really this is just an example to show you
+                //a query where you get the primary key of the inserted row back from
+                //the database!
+            }
+            catch (Exception e)
+            {
+            }
+
+            sqlConnection.Close(); // I am just closing and opening again for simplicity - optimize later
+
+            // Now we have to fill in the response table for the recipients
+            string sqlSelectResponse = $"insert into response (answer, date, eID, sID, completed) " +
+                $"values(null, null, {recipient_eID}, {surveyID}, 0); SELECT LAST_INSERT_ID();";
+
+            MySqlCommand sqlCommandResponse = new MySqlCommand(sqlSelectResponse, sqlConnection);
+
+            //sqlCommand.Parameters.AddWithValue("@qID", qID);
+
+            //this time, we're not using a data adapter to fill a data table.  We're just
+            //opening the connection, telling our command to "executescalar" which says basically
+            //execute the query and just hand me back the number the query returns (the ID, remember?).
+            //don't forget to close the connection!
+            sqlConnection.Open();
+            //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //by closing the connection and moving on
+            try
+            {
+                responseID = Convert.ToInt32(sqlCommandResponse.ExecuteScalar());
+                // we currently dont do anything with this but we could return it
+            }
+            catch (Exception e)
+            {
+            }
+
+            if (surveyID != -1 && responseID != -1)
+            {
+                return surveyID;
+            }
+            return -1;
+        }
+
+
 
 
 
@@ -252,70 +326,70 @@ namespace foxhole
             sqlConnection.Close();
         }
 
-        ////EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
-        //[WebMethod(EnableSession = true)]
-        //public Account[] GetAccounts()
-        //{
-        //    //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
-        //    //just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-        //    //sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-        //    //Keeps everything simple.
+        //EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
+        [WebMethod(EnableSession = true)]
+        public Account[] GetAccounts()
+        {
+            //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+            //just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
+            //sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
+            //Keeps everything simple.
 
-        //    //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
-        //    if (Session["id"] != null)
-        //    {
-        //        DataTable sqlDt = new DataTable("accounts");
+            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            if (Session["id"] != null)
+            {
+                DataTable sqlDt = new DataTable("accounts");
 
-        //        string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-        //        string sqlSelect = "select id, userid, pass, firstname, lastname, email from accounts where active=1 order by lastname";
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                string sqlSelect = "select id, userid, pass, firstname, lastname, email from accounts where active=1 order by lastname";
 
-        //        MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-        //        MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-        //        //gonna use this to fill a data table
-        //        MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-        //        //filling the data table
-        //        sqlDa.Fill(sqlDt);
+                //gonna use this to fill a data table
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+                //filling the data table
+                sqlDa.Fill(sqlDt);
 
-        //        //loop through each row in the dataset, creating instances
-        //        //of our container class Account.  Fill each acciount with
-        //        //data from the rows, then dump them in a list.
-        //        List<Account> accounts = new List<Account>();
-        //        for (int i = 0; i < sqlDt.Rows.Count; i++)
-        //        {
-        //            //only share user id and pass info with admins!
-        //            if (Convert.ToInt32(Session["admin"]) == 1)
-        //            {
-        //                accounts.Add(new Account
-        //                {
-        //                    eID = Convert.ToInt32(sqlDt.Rows[i]["id"]),
-        //                    userName = sqlDt.Rows[i]["userid"].ToString(),
-        //                    password = sqlDt.Rows[i]["pass"].ToString(),
-        //                    firstName = sqlDt.Rows[i]["firstname"].ToString(),
-        //                    lastName = sqlDt.Rows[i]["lastname"].ToString(),
-        //                    email = sqlDt.Rows[i]["email"].ToString()
-        //                });
-        //            }
-        //            else
-        //            {
-        //                accounts.Add(new Account
-        //                {
-        //                    eID = Convert.ToInt32(sqlDt.Rows[i]["id"]),
-        //                    firstName = sqlDt.Rows[i]["firstname"].ToString(),
-        //                    lastName = sqlDt.Rows[i]["lastname"].ToString(),
-        //                    email = sqlDt.Rows[i]["email"].ToString()
-        //                });
-        //            }
-        //        }
-        //        //convert the list of accounts to an array and return!
-        //        return accounts.ToArray();
-        //    }
-        //    else
-        //    {
-        //        //if they're not logged in, return an empty array
-        //        return new Account[0];
-        //    }
-        //}
+                //loop through each row in the dataset, creating instances
+                //of our container class Account.  Fill each acciount with
+                //data from the rows, then dump them in a list.
+                List<Account> accounts = new List<Account>();
+                for (int i = 0; i < sqlDt.Rows.Count; i++)
+                {
+                    //only share user id and pass info with admins!
+                    if (Convert.ToInt32(Session["admin"]) == 1)
+                    {
+                        accounts.Add(new Account
+                        {
+                            eID = Convert.ToInt32(sqlDt.Rows[i]["id"]),
+                            userName = sqlDt.Rows[i]["userid"].ToString(),
+                            password = sqlDt.Rows[i]["pass"].ToString(),
+                            firstName = sqlDt.Rows[i]["firstname"].ToString(),
+                            lastName = sqlDt.Rows[i]["lastname"].ToString(),
+                            email = sqlDt.Rows[i]["email"].ToString()
+                        });
+                    }
+                    else
+                    {
+                        accounts.Add(new Account
+                        {
+                            eID = Convert.ToInt32(sqlDt.Rows[i]["id"]),
+                            firstName = sqlDt.Rows[i]["firstname"].ToString(),
+                            lastName = sqlDt.Rows[i]["lastname"].ToString(),
+                            email = sqlDt.Rows[i]["email"].ToString()
+                        });
+                    }
+                }
+                //convert the list of accounts to an array and return!
+                return accounts.ToArray();
+            }
+            else
+            {
+                //if they're not logged in, return an empty array
+                return new Account[0];
+            }
+        }
 
         //EXAMPLE OF AN UPDATE QUERY WITH PARAMS PASSED IN
         [WebMethod(EnableSession = true)]
