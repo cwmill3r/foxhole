@@ -1,5 +1,7 @@
 // Globals
 let userInfo = undefined;
+let surveyQuestions = undefined;
+let employees = undefined;
 
 // content panels used in hiding showing
 const contentPanels = [
@@ -261,7 +263,7 @@ function LogOff() {
 }
 
 function GetAccounts() {
-    var webMethod = 'AccountServices.asmx/GetAccounts';
+    var webMethod = 'AccountServices.asmx/GetEmployees';
     $.ajax({
         type: 'POST',
         url: webMethod,
@@ -270,7 +272,26 @@ function GetAccounts() {
         dataType: 'json',
         success: function (msg) {
             console.log(msg.d);
-            quizQuestions = msg.d;
+            employees = msg.d;
+            return msg.d;
+        },
+        error: function (e) {
+            alert('Error getting questing from API');
+        }
+    });
+}
+
+function GetSurveyQuestions() {
+    var webMethod = 'AccountServices.asmx/GetAllSurveyQuestions';
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        //data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            console.log(msg.d);
+            surveyQuestions = msg.d;
             return msg.d;
         },
         error: function (e) {
