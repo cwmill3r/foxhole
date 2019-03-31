@@ -2,6 +2,7 @@
 let userInfo = undefined;
 let surveyQuestions = undefined;
 let employees = undefined;
+let unresponded = undefined;
 
 // content panels used in hiding showing
 const contentPanels = [
@@ -35,7 +36,7 @@ function renderHomePage() {
 }
 
 function renderAccountManagementPage() {
-  if (userInfo.admin == 1) {
+  if (userInfo.admin ==1) {
     document.querySelector('#manageTab').innerHTML =
       `<div class="w3-container">
         <h3 class="w3-text-teal">Accounts currently registered with Foxhole</h2>
@@ -71,6 +72,8 @@ function renderAccountPage(userInfo) {
         </div>
       </div>
       </br>`
+    // render the surveys that an employee has not yet responded to
+    GetUnrespondedSurveys(userInfo.eID);
 
     // render the questions that the user created
     //GetUserSurveys(userInfo.id);
@@ -234,7 +237,7 @@ function LogOn(userName, password) {
         return false;
       }
     },
-    error: function (e) {
+      error: function (e) {
       alert('boo...');
     }
   });
@@ -299,6 +302,28 @@ function GetSurveyQuestions() {
         }
     });
 }
+
+function GetUnrespondedSurveys(eID) {
+    var webMethod = 'AccountServices.asmx/GetUnrespondedSurveys';
+    var parameters = '{"eID":"' + encodeURI(eID) + '"}';
+
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            console.log(msg.d);
+            unresponded = msg.d;
+            return msg.d;
+        },
+        error: function (e) {
+            alert('Error getting questing from API');
+        }
+    });
+}
+
 
 
 // login form submit event listener
