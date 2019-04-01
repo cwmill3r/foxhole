@@ -324,6 +324,27 @@ function GetUnrespondedSurveys(eID) {
     });
 }
 
+function GetSurvey(sID) {
+  var webMethod = 'AccountServices.asmx/GetSurvey';
+  var parameters = '{"sID":"' + encodeURI(sID) + '"}';
+
+  $.ajax({
+    type: 'POST',
+    url: webMethod,
+    data: parameters,
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    success: function (msg) {
+      console.log(msg.d);
+      //survey = msg.d;
+      return msg.d;
+    },
+    error: function (e) {
+      alert('Error getting survey from API');
+    }
+  });
+}
+
 
 
 // login form submit event listener
