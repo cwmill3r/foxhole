@@ -9,7 +9,8 @@ const contentPanels = [
   'homeTab',
   'accountTab',
   'surveyTab',
-  'manageTab'
+  'manageTab',
+  'responseTab'
 ];
 
 // login form submit handler
@@ -170,6 +171,19 @@ function renderSurveyPage() {
                  </div>
             </form>
         </div>`
+}
+
+function handleUserResponseClick() {
+    window.alert('user response initiated');
+    renderUserResponsePage();
+    showPanel('responseTab');
+}
+
+function renderUserResponsePage() {
+    document.querySelector('#responseTab').innerHTML =
+        `
+        //user response HTML goes here
+        `
 }
 
 // magic show panel function
