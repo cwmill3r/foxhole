@@ -10,7 +10,8 @@ const contentPanels = [
   'accountTab',
   'surveyTab',
   'manageTab',
-  'responseTab'
+  'responseTab',
+  'createQuestionTab'
 ];
 
 // login form submit handler
@@ -183,6 +184,32 @@ function renderUserResponsePage() {
     document.querySelector('#responseTab').innerHTML =
         `
         //user response HTML goes here
+        `
+}
+
+function handleCreateNewQuestionClick() {
+    window.alert('create new question initiated');
+    renderCreateNewQuestionPage();
+    showPanel('createQuestionTab');
+}
+
+function renderCreateNewQuestionPage() {
+    document.querySelector('#createQuestionTab').innerHTML =
+        `
+        <div id="createQuestionTab" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
+          <div class="createQuestionForm w3-card-4">
+            <div class="w3-container w3-teal"><h2>Create New Question</h2></div>
+            <form id="create-account-form" class="w3-container">
+              <div class="w3-padding-16">
+                <label class="w3-text-teal"><b>Question text</b></label>
+                <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text">
+              </div>
+              <div class="w3-padding-16">
+                <input id="createQuestionButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+              </div>
+            </form>
+          </div>
+        </div>
         `
 }
 
