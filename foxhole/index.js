@@ -95,7 +95,8 @@ function handleLogoffClick() {
 function handleCreateSurveyClick() {
     window.alert('create survey clicked');
     renderSurveyPage();
-    showPanel('surveyTab');
+  showPanel('surveyTab');
+  GetSurvey(3);
 }
 
 function renderSurveyPage() {
@@ -106,7 +107,7 @@ function renderSurveyPage() {
 	        }
 
 	        #question, #recipient {
-	          width: 100%;
+	          width: 100%; 
 	          padding: 12px 20px;
 	          margin: 8px 0;
 	          display: block;

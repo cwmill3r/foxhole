@@ -352,12 +352,13 @@ namespace foxhole
         [WebMethod(EnableSession = true)]
         public List<Survey> GetSurvey(int sID)
         {
-            List<Survey> tmpSurveys = new List<Survey>(); // kind of a temporary list (we return this)
+            List<Survey> tmpSurvey = new List<Survey>(); // kind of a temporary list (we return this)
 
             //WE ONLY LET LOGGED IN USERS SEE THEIR SURVEY!
             if (Session["eID"] != null)
             {
                 DataTable sqlDt = new DataTable("surveys");
+                DataTable sqlDtQuestionText = new DataTable("question");
 
                 string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
                 string sqlSelect = $"select * from survey where survey.sID = {sID}";
@@ -370,29 +371,35 @@ namespace foxhole
                 //filling the data table
                 sqlDa.Fill(sqlDt);
 
-                //loop through each row in the dataset, creating instances
-                //of our container class Account.  Fill each acciount with
-                //data from the rows, then dump them in a list.
-
                 for (int i = 0; i < sqlDt.Rows.Count; i++)
                 {
-                    tmpSurveys.Add(new Survey
+                    tmpSurvey.Add(new Survey
                     {
                         sID = Convert.ToInt32(sqlDt.Rows[i]["sID"]),
                         qID = Convert.ToInt32(sqlDt.Rows[i]["qID"]),
+                        questionText = "",
                         privacy = Convert.ToInt32(sqlDt.Rows[i]["privacy"]),
                         asking_eID = Convert.ToInt32(sqlDt.Rows[i]["asking_eID"]),
                         date = sqlDt.Rows[i]["date"].ToString(),
                     });
 
                 }
+                string sqlSelectQuestionText = $"select text from question where qId = {tmpSurvey[0].qID}";
+
+                MySqlCommand sqlCommandQuestionText = new MySqlCommand(sqlSelectQuestionText, sqlConnection);
                 //convert the list of accounts to an array and return!
-                return tmpSurveys;
+
+                //gonna use this to fill a data table
+                MySqlDataAdapter sqlDaQuestionText = new MySqlDataAdapter(sqlCommandQuestionText);
+                //filling the data table
+                sqlDaQuestionText.Fill(sqlDtQuestionText);
+                tmpSurvey[0].questionText = sqlDtQuestionText.Rows[0]["text"].ToString();
+                return tmpSurvey;
             }
             else
             {
                 //if they're not logged in, return an empty array
-                return tmpSurveys;
+                return tmpSurvey;
             }
         }
 
