@@ -250,6 +250,42 @@ function renderUserResponsePage(e) {
     
 }
 
+function renderUserResponsePageFromURL(sID) {
+  GetSurvey(sID); // sends a response to the global surveyToTake variable
+  sleep(5000).then(() => {
+    console.log(surveyToTake);
+    document.querySelector('#responseTab').innerHTML =
+      `
+        <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
+            <div class="w3-card-4">
+            <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
+            <form id="my-survey-form" class="w3-container">
+                <div class="w3-padding-16">
+                <label class="w3-text-teal"><b>Question</b></label>
+                <p id="questionText">${surveyToTake[0].questionText}</p>
+                <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
+                <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
+                <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
+                </div>
+                <div class="w3-padding-16">
+                <input id="createQuestionButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                </div>
+            </form>
+            </div>
+        </div>
+        <script>
+		    function sliderChange(val) {
+     		    document.getElementById('responseOutput').innerHTML = val;
+		        }
+	    </script>
+        `
+    showPanel('responseTab');
+
+    // then render the questions
+  })
+
+}
+
 function handleCreateNewQuestionClick() {
     window.alert('create new question initiated');
     renderCreateNewQuestionPage();
@@ -314,6 +350,32 @@ function sendTestEmail() {
     });
 }
 
+//// ?x=Hello
+//function parseURLForQueryString(variable) {
+//  var query = window.location.search.substring(1);
+//  console.log(query);
+//  var vars = query.split('&');
+//  console.log(vars);
+//  for (var i = 0; i < vars.length; i++) {
+//    var pair = vars[i].split('=');
+//    console.log(pair);
+//    if (decodeURIComponent(pair[0]) == variable) {
+//      return decodeURIComponent(pair[1]);
+//    }
+//    else {
+//      return null;
+//    }
+//  }
+//}
+
+//// $.urlParam('param1');
+//$.urlParam = function (name) {
+//  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+//  if (results == null) {
+//    return null;
+//  }
+//  return decodeURI(results[1]) || 0;
+//}
 
 // Services
 // Utilizes the LogOn C# Web Service
@@ -329,8 +391,14 @@ function LogOn(userName, password) {
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     success: function (msg) {
-        if (msg.d.loggedIn) {
-        alert("logon success");
+    if (msg.d.loggedIn) {
+      alert("logon success");
+      let searchParams = new URLSearchParams(window.location.search)
+      console.log(searchParams);
+      //searchParams.has('sent')
+      //console.log(queryString);
+      console.log(searchParams.has('sID'));
+      if (searchParams.has('sID') == false) {
         userInfo = msg.d;
         console.log(userInfo); // remove for production
         clearLogOnForm();
@@ -339,9 +407,22 @@ function LogOn(userName, password) {
         renderAccountPage(userInfo);
         return true;
       } else {
+        alert('this is where we show the other page');
+        let searchParams = new URLSearchParams(window.location.search)
+        let param = searchParams.get('sID');
+        console.log(param); // we will use this to actually show the survey
+        userInfo = msg.d;
+        console.log(userInfo); // remove for production
+        clearLogOnForm();
+        hideModal();
+        clearHomeTab();
+        renderUserResponsePageFromURL(param);
+        return true;
+      }
+      } else {
         //server replied false, so let the user know
         //the logon failed
-        alert('logon failed');
+      alert('logon failed');
         return false;
       }
     },
