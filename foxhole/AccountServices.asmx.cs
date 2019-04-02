@@ -337,6 +337,8 @@ namespace foxhole
                         asking_eID = Convert.ToInt32(sqlDt.Rows[i]["asking_eID"]),
                         date = sqlDt.Rows[i]["date"].ToString(),
                     });
+                    string questionText = GetQuestionText(tmpSurveys[i].qID);
+                    tmpSurveys[i].questionText = questionText;
                     
                 }
                 //convert the list of accounts to an array and return!
@@ -358,7 +360,6 @@ namespace foxhole
             if (Session["eID"] != null)
             {
                 DataTable sqlDt = new DataTable("surveys");
-                DataTable sqlDtQuestionText = new DataTable("question");
 
                 string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
                 string sqlSelect = $"select * from survey where survey.sID = {sID}";
@@ -377,23 +378,15 @@ namespace foxhole
                     {
                         sID = Convert.ToInt32(sqlDt.Rows[i]["sID"]),
                         qID = Convert.ToInt32(sqlDt.Rows[i]["qID"]),
-                        questionText = "",
                         privacy = Convert.ToInt32(sqlDt.Rows[i]["privacy"]),
                         asking_eID = Convert.ToInt32(sqlDt.Rows[i]["asking_eID"]),
                         date = sqlDt.Rows[i]["date"].ToString(),
                     });
+                    string questionText = GetQuestionText(tmpSurvey[i].qID);
+                    tmpSurvey[i].questionText = questionText;
 
                 }
-                string sqlSelectQuestionText = $"select text from question where qId = {tmpSurvey[0].qID}";
-
-                MySqlCommand sqlCommandQuestionText = new MySqlCommand(sqlSelectQuestionText, sqlConnection);
-                //convert the list of accounts to an array and return!
-
-                //gonna use this to fill a data table
-                MySqlDataAdapter sqlDaQuestionText = new MySqlDataAdapter(sqlCommandQuestionText);
-                //filling the data table
-                sqlDaQuestionText.Fill(sqlDtQuestionText);
-                tmpSurvey[0].questionText = sqlDtQuestionText.Rows[0]["text"].ToString();
+                
                 return tmpSurvey;
             }
             else
@@ -401,6 +394,38 @@ namespace foxhole
                 //if they're not logged in, return an empty array
                 return tmpSurvey;
             }
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string GetQuestionText(int qID)
+        {
+            string questionText; // we'll return this
+
+            DataTable sqlDt = new DataTable("question");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            string sqlSelect = $"select text from question where question.qID = {qID}";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlConnection.Open();
+            //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //by closing the connection and moving on
+            try
+            {
+                questionText = sqlCommand.ExecuteScalar().ToString();
+                //here, you could use this accountID for additional queries regarding
+                //the requested account.  Really this is just an example to show you
+                //a query where you get the primary key of the inserted row back from
+                //the database!
+                return questionText;
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+            return "failed";
         }
 
 
@@ -418,7 +443,9 @@ namespace foxhole
 
 
 
-         
+
+
+
 
 
 

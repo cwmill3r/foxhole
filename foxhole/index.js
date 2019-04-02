@@ -2,7 +2,8 @@
 let userInfo = undefined;
 let surveyQuestions = undefined;
 let employees = undefined;
-let unresponded = undefined;
+let unrespondedSurveys = undefined;
+let surveyToTake = undefined;
 
 // content panels used in hiding showing
 const contentPanels = [
@@ -21,7 +22,7 @@ function handleLoginFormSubmit(e) {
   const pass = document.querySelector('#pswr').value;
   LogOn(id, pass);
   console.log(userInfo);
-  //sendTestEmail();
+  //
 }
 
 function clearLogOnForm() {
@@ -68,6 +69,7 @@ function renderAccountPage(userInfo) {
           <button onclick="handleCreateSurveyClick(this)" id="createSurveyButton">create new survey</button>
         </div>
       </div>
+      <div id="surveyContainer"></div>
       <div class="w3-container">
         <div class="w3-section">
           <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
@@ -75,8 +77,14 @@ function renderAccountPage(userInfo) {
       </div>
       </br>`
     // render the surveys that an employee has not yet responded to
-    GetUnrespondedSurveys(userInfo.eID);
 
+    GetUnrespondedSurveys(userInfo.eID);
+    sleep(5000).then(() => {
+      renderUnrespondedSurveys();
+      
+      // then render the questions
+    })
+   
     // render the questions that the user created
     //GetUserSurveys(userInfo.id);
   } else {
@@ -86,6 +94,27 @@ function renderAccountPage(userInfo) {
 
   // show the rendered page
   showPanel('accountTab');
+}
+
+function renderUnrespondedSurveys() {
+  alert('Hello from unresponded survey thing...speed up for production');
+  console.log(unrespondedSurveys);
+  document.querySelector('#surveyContainer').innerHTML += `<h3>Unresponded Surveys</h3>`;
+  unrespondedSurveys.map(function (survey) {
+    console.log(survey);
+    document.querySelector('#userSurveyList').innerHTML +=
+      `<li class="w3-bar">
+        <span data-sID=${survey.sID} onClick="renderUserResponsePage(this)" class="takeSurveyButton w3-bar-item w3-button w3-xlarge w3-right">
+          <i class="fa fa-reply"></i>
+          <p class="takeSurveyButton w3-small">Take Survey</p>
+        </span>
+   
+        <div class="w3-bar-item">
+          <span class="w3-large w3-text-grey"> ${survey.questionText} </span><br>
+          <span class="w3-large w3-text-grey"> ${survey.date} </span><br>
+        </div>
+      </li>`
+  });
 }
 
 function handleLogoffClick() {
@@ -99,6 +128,7 @@ function handleCreateSurveyClick() {
     renderSurveyPage();
   showPanel('surveyTab');
   GetSurvey(3);
+  console.log(unrespondedSurveys);
 }
 
 function renderSurveyPage() {
@@ -181,16 +211,22 @@ function handleUserResponseClick() {
     showPanel('responseTab');
 }
 
-function renderUserResponsePage() {
+function renderUserResponsePage(e) {
+  console.log(e);
+  const sID = e.getAttribute("data-sID");
+  console.log(sID);
+  GetSurvey(sID); // sends a response to the global surveyToTake variable
+  sleep(5000).then(() => {
+    console.log(surveyToTake);
     document.querySelector('#responseTab').innerHTML =
-        `
+      `
         <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
             <div class="w3-card-4">
             <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
             <form id="my-survey-form" class="w3-container">
                 <div class="w3-padding-16">
                 <label class="w3-text-teal"><b>Question</b></label>
-                <p id="questionText">Sample Text blah blah blah</p>
+                <p id="questionText">${surveyToTake[0].questionText}</p>
                 <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
                 <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
                 <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
@@ -207,6 +243,11 @@ function renderUserResponsePage() {
 		        }
 	    </script>
         `
+    showPanel('responseTab');
+
+    // then render the questions
+  })
+    
 }
 
 function handleCreateNewQuestionClick() {
@@ -252,6 +293,10 @@ function hideModal() {
  
 function clearHomeTab() {
   document.querySelector('#homeTab').innerHTML = '';
+}
+
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
 
@@ -378,7 +423,7 @@ function GetUnrespondedSurveys(eID) {
         dataType: 'json',
         success: function (msg) {
             console.log(msg.d);
-            unresponded = msg.d;
+            unrespondedSurveys = msg.d;
             return msg.d;
         },
         error: function (e) {
@@ -399,7 +444,7 @@ function GetSurvey(sID) {
     dataType: 'json',
     success: function (msg) {
       console.log(msg.d);
-      //survey = msg.d;
+      surveyToTake = msg.d;
       return msg.d;
     },
     error: function (e) {
