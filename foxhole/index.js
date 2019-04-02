@@ -183,7 +183,28 @@ function handleUserResponseClick() {
 function renderUserResponsePage() {
     document.querySelector('#responseTab').innerHTML =
         `
-        //user response HTML goes here
+        <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
+            <div class="w3-card-4">
+            <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
+            <form id="my-survey-form" class="w3-container">
+                <div class="w3-padding-16">
+                <label class="w3-text-teal"><b>Question</b></label>
+                <p id="questionText">Sample Text blah blah blah</p>
+                <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
+                <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
+                <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
+                </div>
+                <div class="w3-padding-16">
+                <input id="createQuestionButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                </div>
+            </form>
+            </div>
+        </div>
+        <script>
+		    function sliderChange(val) {
+     		    document.getElementById('responseOutput').innerHTML = val;
+		        }
+	    </script>
         `
 }
 
@@ -199,7 +220,7 @@ function renderCreateNewQuestionPage() {
         <div id="createQuestionTab" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
           <div class="createQuestionForm w3-card-4">
             <div class="w3-container w3-teal"><h2>Create New Question</h2></div>
-            <form id="create-account-form" class="w3-container">
+            <form id="createQuestionForm" class="w3-container">
               <div class="w3-padding-16">
                 <label class="w3-text-teal"><b>Question text</b></label>
                 <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text">
