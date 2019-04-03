@@ -14,7 +14,7 @@ const contentPanels = [
   'responseTab',
   'createQuestionTab'
 ];
-
+ 
 // login form submit handler
 function handleLoginFormSubmit(e) {
   e.preventDefault();

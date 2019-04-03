@@ -457,7 +457,7 @@ namespace foxhole
 
 
 
-
+        // These are old delete them for production>>>>>>>
 
         //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
         [WebMethod(EnableSession = true)]
