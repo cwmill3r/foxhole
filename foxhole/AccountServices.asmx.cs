@@ -123,7 +123,7 @@ namespace foxhole
         }
 
         [WebMethod(EnableSession = true)]
-        public Account[] GetEmployees()
+        public Account[] GetEmployees  ()
         {
             //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
             if (Session["eID"] != null)
@@ -188,10 +188,9 @@ namespace foxhole
 
         // At first we are going to pass a single recipient and then later an array of recipients
         [WebMethod(EnableSession = true)]
-        public int CreateSurvey(int qID, int privacy, int asking_eID, string date, int recipient_eID) //'YYYY-MM-DD'
+        public int CreateSurvey(int qID, int privacy, int asking_eID, string date) // left recipient_eID out for testing
         {
             int surveyID = -1; // This is the id of the survey we will return
-            int responseID = -1;
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
             //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
@@ -228,35 +227,39 @@ namespace foxhole
 
             sqlConnection.Close(); // I am just closing and opening again for simplicity - optimize later
 
-            // Now we have to fill in the response table for the recipients
-            string sqlSelectResponse = $"insert into response (answer, date, eID, sID, completed) " +
-                $"values(null, null, {recipient_eID}, {surveyID}, 0); SELECT LAST_INSERT_ID();";
+            //for(int i = 0; i < recipient_eID.Length; i++)
+            //{
+            //    // Now we have to fill in the response table for the recipients
+            //    string sqlSelectResponse = $"insert into response (answer, date, eID, sID, completed) " +
+            //        $"values(null, null, {recipient_eID[i]}, {surveyID}, 0); SELECT LAST_INSERT_ID();";
 
-            MySqlCommand sqlCommandResponse = new MySqlCommand(sqlSelectResponse, sqlConnection);
+            //    MySqlCommand sqlCommandResponse = new MySqlCommand(sqlSelectResponse, sqlConnection);
 
-            //sqlCommand.Parameters.AddWithValue("@qID", qID);
+            //    //sqlCommand.Parameters.AddWithValue("@qID", qID);
 
-            //this time, we're not using a data adapter to fill a data table.  We're just
-            //opening the connection, telling our command to "executescalar" which says basically
-            //execute the query and just hand me back the number the query returns (the ID, remember?).
-            //don't forget to close the connection!
-            sqlConnection.Open();
-            //we're using a try/catch so that if the query errors out we can handle it gracefully
-            //by closing the connection and moving on
-            try
-            {
-                responseID = Convert.ToInt32(sqlCommandResponse.ExecuteScalar());
-                // we currently dont do anything with this but we could return it
-            }
-            catch (Exception e)
-            {
-            }
+            //    //this time, we're not using a data adapter to fill a data table.  We're just
+            //    //opening the connection, telling our command to "executescalar" which says basically
+            //    //execute the query and just hand me back the number the query returns (the ID, remember?).
+            //    //don't forget to close the connection!
+            //    sqlConnection.Open();
+            //    //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //    //by closing the connection and moving on
+            //    try
+            //    {
+            //        Convert.ToInt32(sqlCommandResponse.ExecuteScalar());
+            //        // we currently dont do anything with this but we could return it
+            //    }
+            //    catch (Exception e)
+            //    {
+            //    }
+            //    sqlConnection.Close();
+            //}
 
-            if (surveyID != -1 && responseID != -1)
+            if (surveyID != -1)
             {
                 return surveyID;
             }
-            sqlConnection.Close(); // I am just closing and opening again for simplicity - optimize later
+            sqlConnection.Close();
             return -1;
         }
 

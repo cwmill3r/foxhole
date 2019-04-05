@@ -131,19 +131,26 @@ function handleCreateSurveyClick() {
 
 function renderSurveyPage() {
   GetSurveyQuestions();
-  //  **** format to render questions
   document.querySelector('#accountTab').style.height = "0px";
   console.log(surveyQuestions);
+  GetAccounts();
   sleep(5000).then(() => {
     //const sQuestions = GetSurveyQuestions();
     console.log(surveyQuestions);
-    const questionConatiner = document.querySelector('#questionContainer');
+    const questionContainer = document.querySelector('#questionContainer');
 
     surveyQuestions.map(function (question) {
       console.log(question.text);
-      questionContainer.innerHTML += `<option value="example1">${question.text}</option>`;
+      questionContainer.innerHTML += `<option data-qID=${question.qID} value="example1">${question.text}</option>`;
+    });
+
+    const employeeContainer = document.querySelector('#employeeContainer');
+    console.log(employees);
+    employees.map(function (employee) {
+      employeeContainer.innerHTML += `<option data-eID=${employee.eID}">${employee.email}</option>`;
     });
   });
+
 
   //surveyQuestions.map(function (question) {
   //  questionContainer.innerHTML = question.questionText;
@@ -151,11 +158,72 @@ function renderSurveyPage() {
   
 }
 
-function handleUserResponseClick() {
-    window.alert('user response initiated');
-    renderUserResponsePage();
-    showPanel('responseTab');
+function handleUserResponseSubmit(e) {
+  e.preventDefault;
+  console.log(e);
+  alert('response form submitted');
+
+  // qID, privacy, asking_eID, date, int[] recipient_eID
+  let qID = getSelectedQuestion();
+  let privacy = undefined;
+  if (document.querySelector('#anonymous').checked) {
+    privacy = 1;
+  } else {
+    privacy =0
+  }
+  let asking_eID = employees[0].eID;
+  let d = new Date();
+  let datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  console.log(datestring);
+
+  let recipients = getSelectedEmployees();
+  console.log(qID, privacy, asking_eID, datestring, recipients[0]);
+
+  let surveyID = CreateSurvey(qID, privacy, asking_eID, datestring); // add recipients array back in after testing
+  console.log(surveyID);
 }
+
+// returns the recipients as array of ints to be consumed by the CreateSurvey() service
+function getSelectedQuestion() {
+  let questionContainer = document.getElementById('questionContainer'), question, i;
+  let selectedQuestion = undefined;
+
+  for (i = 0; i < questionContainer.length; i++) {
+    question = questionContainer.options[i];
+    if (question.selected) {
+      console.log(question);
+      let selectedQID = questionContainer.options[i].getAttribute("data-qid");
+      selectedQID = parseInt(selectedQID);
+      console.log(selectedQID);
+      selectedQuestion = selectedQID;
+    }
+  }
+  return selectedQuestion;
+}
+
+// returns the recipients as array of ints to be consumed by the CreateSurvey() service
+function getSelectedEmployees() {
+  let employeeContainer = document.getElementById('employeeContainer'), employee, i;
+  let employeeArray = [];
+
+  for (i = 0; i < employeeContainer.length; i++) {
+    employee = employeeContainer.options[i];
+    if (employee.selected) {
+      console.log(employee);
+      let recipientEID = employeeContainer.options[i].getAttribute("data-eid");
+      recipientEID = parseInt(recipientEID);
+      console.log(recipientEID);
+      employeeArray.push(recipientEID);
+    }
+  }
+  return employeeArray;
+}
+
+//function handleUserResponseClick() {
+//    window.alert('user response initiated');
+//    renderUserResponsePage();
+//    showPanel('responseTab');
+//}
 
 function renderUserResponsePage(e) {
   console.log(e);
@@ -476,6 +544,27 @@ function GetSurvey(sID) {
       return msg.d;
     },
     error: function (e) {
+      alert('Error getting survey from API');
+    }
+  });
+}
+//int qID, int privacy, int asking_eID, string date
+function CreateSurvey(qID, privacy, asking_eID, date) { // add recipient_eID in later
+  var webMethod = 'AccountServices.asmx/CreateSurvey';
+  var parameters = `{"qID": ${encodeURI(qID)}, "privacy": ${encodeURI(privacy)}, "asking_eID": ${encodeURI(asking_eID)}, "date": "${encodeURI(date)}"}` //"recipient_eID": ${encodeURI(recipient_eID)}
+  console.log(parameters);
+  $.ajax({
+    type: 'POST',
+    url: webMethod,
+    data: parameters,
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    success: function (msg) {
+      console.log(msg.d);
+      return msg.d;
+    },
+    error: function (e) {
+      console.log(e);
       alert('Error getting survey from API');
     }
   });

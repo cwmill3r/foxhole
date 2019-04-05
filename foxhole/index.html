@@ -270,10 +270,9 @@
             <input type="checkbox" name="anon" id="anonymous">
 
             <label for="recipient"><b>Survey Recipient (Email)</b></label>
-            <input type="text" name="recipient" id="recipient">
+            <select multiple name="recipient" id="employeeContainer"></select>
 
-
-            <input type="submit" value="Create Survey">
+            <input type="button" value="Create Survey" onclick="handleUserResponseSubmit(this)">
           </div>
         </form>
       </div>
