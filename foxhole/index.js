@@ -124,85 +124,31 @@ function handleLogoffClick() {
 }
 
 function handleCreateSurveyClick() {
-    window.alert('create survey clicked');
-    renderSurveyPage();
+  window.alert('create survey clicked');
+  renderSurveyPage();
   showPanel('surveyTab');
-  GetSurvey(3);
-  console.log(unrespondedSurveys);
 }
 
 function renderSurveyPage() {
-    document.querySelector('#surveyTab').innerHTML =
-        `<style>
-        body {
-	          font-family: Arial;
-	        }
+  GetSurveyQuestions();
+  //  **** format to render questions
+  document.querySelector('#accountTab').style.height = "0px";
+  console.log(surveyQuestions);
+  sleep(5000).then(() => {
+    //const sQuestions = GetSurveyQuestions();
+    console.log(surveyQuestions);
+    const questionConatiner = document.querySelector('#questionContainer');
 
-	        #question, #recipient {
-	          width: 100%; 
-	          padding: 12px 20px;
-	          margin: 8px 0;
-	          display: block;
-	          border: 1px solid #ccc;
-	          border-radius: 4px;
-	          box-sizing: border-box;
-	        }
+    surveyQuestions.map(function (question) {
+      console.log(question.text);
+      questionContainer.innerHTML += `<option value="example1">${question.text}</option>`;
+    });
+  });
 
-	        #anonymous {
-	          padding: 12px 20px;
-	          margin: 8px 0;
-	          display: block;
-	          border: 1px solid #ccc;
-	          border-radius: 4px;
-	          box-sizing: border-box;
-	        }
-
-	        input[type=submit] {
-	          width: 100%;
-	          background-color: #4CAF50;
-	          color: white;
-	          padding: 14px 20px;
-	          margin: 8px 0;
-	          border: none;
-	          border-radius: 4px;
-	          cursor: pointer;
-	        }
-
-	        input[type=submit]:hover {
-	          background-color: #45a049;
-	        }
-
-	        div.container {
-	          border-radius: 5px;
-	          background-color: #f2f2f2;
-	          padding: 20px;
-	        }
-        </style>
-
-        <div class="w3-container">
-	        <form id="surveyForm">
-                <div class="container">
-
-      	            <h3 style="text-align: center;">Create A New Survey</h3>
-
-                    <label for="ques"><b>Question</b></label>
-                    <select name="ques" id="question">
-        	            <option value="example1">Example 1</option>
-        	            <option value="example2">Example 2</option>
-        	            <option value="example3">Example 3</option>
-                    </select>
-
-                    <label for="anon"><b>Anonymous? (Check If Yes)</b></label>
-                    <input type="checkbox" name="anon" id="anonymous">
-
-		            <label for="recipient"><b>Survey Recipient (Email)</b></label>
-		            <input type="text" name="recipient" id="recipient">
-
-
-                    <input type="submit" value="Create Survey">
-                 </div>
-            </form>
-        </div>`
+  //surveyQuestions.map(function (question) {
+  //  questionContainer.innerHTML = question.questionText;
+  //})
+  
 }
 
 function handleUserResponseClick() {
@@ -213,7 +159,7 @@ function handleUserResponseClick() {
 
 function renderUserResponsePage(e) {
   console.log(e);
-  const sID = e.getAttribute("data-sID");
+  const sID = e.getAttribute("data-sID"); 
   console.log(sID);
   GetSurvey(sID); // sends a response to the global surveyToTake variable
   sleep(5000).then(() => {
@@ -476,19 +422,20 @@ function GetAccounts() {
 function GetSurveyQuestions() {
     var webMethod = 'AccountServices.asmx/GetAllSurveyQuestions';
     $.ajax({
-        type: 'POST',
-        url: webMethod,
-        //data: parameters,
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: function (msg) {
-            console.log(msg.d);
-            surveyQuestions = msg.d;
-            return msg.d;
-        },
-        error: function (e) {
-            alert('Error getting questing from API');
-        }
+      type: 'POST',
+      url: webMethod,
+      //data: parameters,
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      success: function (msg) {
+        console.log(msg.d);
+        surveyQuestions = msg.d;
+        console.log(surveyQuestions);
+        return msg.d;
+      },
+      error: function (e) {
+          alert('Error getting questing from API');
+      }
     });
 }
 
