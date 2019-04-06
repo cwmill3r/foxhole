@@ -4,6 +4,7 @@ let surveyQuestions = undefined;
 let employees = undefined;
 let unrespondedSurveys = undefined;
 let surveyToTake = undefined;
+let surveyID = undefined;
 
 // content panels used in hiding showing
 const contentPanels = [
@@ -179,8 +180,23 @@ function handleUserResponseSubmit(e) {
   let recipients = getSelectedEmployees();
   console.log(qID, privacy, asking_eID, datestring, recipients[0]);
 
-  let surveyID = CreateSurvey(qID, privacy, asking_eID, datestring); // add recipients array back in after testing
+  showPanel('accountTab');
+
+  CreateSurvey(qID, privacy, asking_eID, datestring); // saves to global
   console.log(surveyID);
+  sleep(10000).then(() => {
+    recipients.map(function (recipient) {
+      //FillRecipientsTable(recipient, surveyID);
+      sleep(10000).then(() => {
+        console.log(recipient);
+        // pause to allow service to execute
+        // fillrecipientstable(4, 2); /// testing
+        FillRecipientsTable(recipient, surveyID);
+
+      })
+    });
+  });
+  alert('recipient Table successfully filled');
 }
 
 // returns the recipients as array of ints to be consumed by the CreateSurvey() service
@@ -549,9 +565,32 @@ function GetSurvey(sID) {
   });
 }
 //int qID, int privacy, int asking_eID, string date
-function CreateSurvey(qID, privacy, asking_eID, date) { // add recipient_eID in later
+function CreateSurvey(qID, privacy, asking_eID, date, recipients) { // add recipient_eID in later
   var webMethod = 'AccountServices.asmx/CreateSurvey';
   var parameters = `{"qID": ${encodeURI(qID)}, "privacy": ${encodeURI(privacy)}, "asking_eID": ${encodeURI(asking_eID)}, "date": "${encodeURI(date)}"}` //"recipient_eID": ${encodeURI(recipient_eID)}
+  console.log(parameters);
+  $.ajax({
+    type: 'POST',
+    url: webMethod,
+    data: parameters,
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    success: function (msg) {
+      alert('Survey successfully created');
+      console.log(msg.d);
+      surveyID = msg.d;
+      return msg.d;
+    },
+    error: function (e) {
+      console.log(e);
+      alert('Error creating Survey');
+    }
+  });
+}
+
+function FillRecipientsTable(recipient_eID, surveyID) {
+  var webMethod = 'AccountServices.asmx/FillRecipientsTable';
+  var parameters = `{"recipient_eID": ${encodeURI(recipient_eID)}, "surveyID": ${encodeURI(surveyID)}}` //"recipient_eID": ${encodeURI(recipient_eID)}
   console.log(parameters);
   $.ajax({
     type: 'POST',

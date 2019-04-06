@@ -227,11 +227,13 @@ namespace foxhole
 
             sqlConnection.Close(); // I am just closing and opening again for simplicity - optimize later
 
-            //for(int i = 0; i < recipient_eID.Length; i++)
+            //for (int i = 0; i < recipients.Length; i++)
             //{
+            //    string tempRecipient = recipients[i];
+            //    int tempRecipientNum = Convert.ToInt32(tempRecipient);
             //    // Now we have to fill in the response table for the recipients
             //    string sqlSelectResponse = $"insert into response (answer, date, eID, sID, completed) " +
-            //        $"values(null, null, {recipient_eID[i]}, {surveyID}, 0); SELECT LAST_INSERT_ID();";
+            //        $"values(null, null, {tempRecipientNum}, {surveyID}, 0); SELECT LAST_INSERT_ID();";
 
             //    MySqlCommand sqlCommandResponse = new MySqlCommand(sqlSelectResponse, sqlConnection);
 
@@ -248,6 +250,7 @@ namespace foxhole
             //    {
             //        Convert.ToInt32(sqlCommandResponse.ExecuteScalar());
             //        // we currently dont do anything with this but we could return it
+            //        recipientSuccess = true;
             //    }
             //    catch (Exception e)
             //    {
