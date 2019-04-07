@@ -12,7 +12,9 @@ const contentPanels = [
   'surveyTab',
   'manageTab',
   'responseTab',
-  'createQuestionTab'
+  'createQuestionTab',
+  'editAccountTab',
+  'createAccountTab'
 ];
 
 // login form submit handler
@@ -42,9 +44,12 @@ function renderAccountManagementPage() {
   if (userInfo.admin ==1) {
     document.querySelector('#manageTab').innerHTML =
       `<div class="w3-container">
-        <h3 class="w3-text-teal">Accounts currently registered with Foxhole</h2>
+        <h3 class="w3-text-teal">Accounts currently registered with Foxhole</h3>
         <div class="w3-right">
           <button onclick="renderAccountPage(userInfo)" id="returnButton">Return to your Account</button>
+        </div>
+        <div class="w3-left">
+            <button onclick="handleCreateAccountClick(this)" id="createAccountButton">Create new Account</button>
         </div>
        </div>
        <br>`
@@ -117,6 +122,35 @@ function renderUnrespondedSurveys() {
   });
 }
 
+function renderEmployeeAccounts(employees) {
+    document.querySelector('#manageTab').innerHTML += `
+  <div class="w3-container">
+    <ul id="userAccountList" class="w3-ul w3-card-4"></ul>
+  </div>
+  `
+    document.querySelector('#userAccountList').innerHTML = "";
+   
+    employees.map(function (employee, index) {
+        console.log(employee);
+        document.querySelector('#userAccountList').innerHTML += `
+      <li class="w3-bar">
+        <span data-eID=${employee.eID} onclick="handleDeleteAccountClick(this)" class="accountDeleteButton w3-bar-item w3-button w3-xlarge w3-right">
+          <i data-eID=${employee.eID} class="accountDeleteButton fa fa-times" aria-hidden="true"></i>
+          <p data-eID=${employee.eID} class="accountDeleteButton w3-small">delete</p>
+        </span>
+        <span data-eID=${employee.eID} onclick="handleEditAccountClick(this)" class="questionEditButton w3-bar-item w3-button w3-xlarge w3-right">
+          <i data-eID=${employee.eID} onclick="handleEditAccountClick(this)" class="fa fa-pencil" aria-hidden="true"></i>
+          <p data-eID=${employee.eID} onclick="handleEditAccountClick(this)" class="w3-small">edit</p>
+        </span>
+        <div class="w3-bar-item">
+          <span class="w3-large w3-text-grey">Employee: ${employee.firstName}  ${employee.lastName}</span><br>
+        </div>
+      </li>
+    `
+    });
+}
+
+
 function handleLogoffClick() {
   LogOff();
   renderHomePage();
@@ -130,6 +164,76 @@ function handleCreateSurveyClick() {
   GetSurvey(3);
   console.log(unrespondedSurveys);
 }
+
+function handleDeleteAccountClick(event) {
+  const eID = event.getAttribute("data-eID");
+  console.log(`employeeID is ${eID}`);
+  DeleteAccount(eID);
+}
+
+function handleEditAccountClick(event) {
+    const eID = event.getAttribute("data-eID");
+    // first we render the form filled with that account details
+    renderEditAccountForm(eID);
+}
+
+function handleCreateAccountClick(e) {
+    //clear the questions list
+    document.querySelector('#userAccountList').innerHTML = "";
+    showPanel('createAccountTab')
+}
+
+function renderEditAccountForm(eID) {
+    showPanel('editAccountTab');
+    console.log(employees);
+    console.log(eID);
+
+    employees.filter(function (q) {
+        console.log(q);
+        return q.eID == eID;
+    }).map(function (q) {
+        document.querySelector('#eq-userName').value = q.userName;
+        document.querySelector('#eq-password').value = q.password;
+        document.querySelector('#eq-firstName').value = q.firstName;
+        document.querySelector('#eq-lastName').value = q.lastName;
+        document.querySelector('#eq-email').value = q.email;
+        document.querySelector('#eq-position').value = q.position;
+        document.querySelector('#eq-eID').value = q.eID;
+        })
+    };
+
+function handleEditAccountFormSubmit(e) {
+    e.preventDefault();
+    const eID = document.querySelector('#eq-eID').value;
+    const userName = document.querySelector('#eq-userName').value;
+    const password = document.querySelector('#eq-password').value;
+    const firstName = document.querySelector('#eq-firstName').value;
+    const lastName = document.querySelector('#eq-lastName').value;
+    const email = document.querySelector('#eq-email').value;
+    const position = document.querySelector('#eq-position').value;
+    EditAccount(eID, userName, password, firstName, lastName, email, position);
+    document.querySelector('#editAccountTab').innerHTML = "";
+}
+
+function handleCreateAccountFormSubmit(e) {
+    e.preventDefault();
+    //const eID = document.querySelector('#cq-eID').value;
+    const userName = document.querySelector('#cq-userName').value;
+    const password = document.querySelector('#cq-password').value;
+    const firstName = document.querySelector('#cq-firstName').value;
+    const lastName = document.querySelector('#cq-lastName').value;
+    const email = document.querySelector('#cq-email').value;
+    const position = document.querySelector('#cq-position').value;
+    //alert('form about to be submitted');
+    // actually create the account
+    console.log(userName + " " + password + " " + firstName + " " + lastName + " " + email + " " + position)
+    CreateAccount(userName, password, firstName, lastName, email, position);
+    //document.querySelector('createAccountTab').innerHTML = "";
+}
+
+
+
+
 
 function renderSurveyPage() {
     document.querySelector('#surveyTab').innerHTML =
@@ -384,7 +488,7 @@ function GetAccounts() {
         success: function (msg) {
             console.log(msg.d);
             employees = msg.d;
-            return msg.d;
+            renderEmployeeAccounts(msg.d)
         },
         error: function (e) {
             alert('Error getting questing from API');
@@ -453,9 +557,106 @@ function GetSurvey(sID) {
   });
 }
 
+function DeleteAccount(eID) {
+    var webMethod = 'AccountServices.asmx/DeleteAccount';
+    var parameters = `{ "eID" : ${encodeURI(eID)}}`;
+    console.log(parameters);
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            console.log(msg.d);
+            renderAccountManagementPage();
+            //renderEmployeeAccounts(msg.d);
+            return msg.d;
+            showPanel('manageTab');
+        },
+        error: function (e) {
+            alert('Error deleting account');
+        }
+    });
+}
+
+function EditAccount(eID, userName, password, firstName, lastName, email, position) {
+    var webMethod = 'AccountServices.asmx/UpdateAccount';
+    var parameters = `{
+    "eID": ${eID},
+    "userName": "${encodeURI(userName)}",
+    "password" : "${encodeURI(password)}",
+    "firstName" : "${encodeURI(firstName)}",
+    "lastName" : "${encodeURI(lastName)}",
+    "email" : "${encodeURI(email)}",
+    "position" : "${encodeURI(position)}"
+  }`;
+    console.log(parameters);
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            // clear some old stuff out to make room...
+            //document.querySelector('#accountSettingsTab').innerHTML = "";
+            document.querySelector('#userAccountList').innerHTML = "";
+            // render the new page with the edited account
+            renderAccountManagementPage();
+            renderEmployeeAccounts(msg.d);
+            showPanel('manageTab');
+        },
+        error: function (e) {
+            alert('boo...');
+        }
+    });
+}
+
+function CreateAccount(userName, password, firstName, lastName, email, position) {
+    var webMethod = 'AccountServices.asmx/CreateAccount';
+    var parameters = `{
+    "userName": "${encodeURI(userName)}",
+    "password" : "${encodeURI(password)}",
+    "firstName" : "${encodeURI(firstName)}",
+    "lastName" : "${encodeURI(lastName)}",
+    "email" : "${encodeURI(email)}",
+    "position" : "${encodeURI(position)}"
+  }`;
+    console.log(parameters);
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            alert('Congrats your account was approved...');
+            //document.querySelector('#accountSettingsTab').innerHTML = "";
+            showPanel('manageTab');
+            renderAccountManagementPage();
+            renderEmployeeAccounts(msg.d);
+        },
+        error: function (e) {
+            alert('boo...');
+        }
+    });
+}
+
+
+
 
 
 // login form submit event listener
 document.querySelector('#loginForm').addEventListener('submit', function (e) {
     handleLoginFormSubmit(e);
+});
+
+document.querySelector('#editAccountForm').addEventListener('submit', function (e) {
+    handleEditAccountFormSubmit(e);
+});
+
+document.querySelector('#create-account-form').addEventListener('submit', function (e) {
+    console.log(e);
+    handleCreateAccountFormSubmit(e);
 });
