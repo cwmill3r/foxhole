@@ -123,61 +123,61 @@ namespace foxhole
         }
 
         [WebMethod(EnableSession = true)]
-          public Account[] GetEmployees()
-          {
-              //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
-              if (Session["eID"] != null)
-              {
-                  DataTable sqlDt = new DataTable("employees");
+        public Account[] GetEmployees  ()
+        {
+            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            if (Session["eID"] != null)
+            {
+                DataTable sqlDt = new DataTable("employees");
 
-                  string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-                  string sqlSelect = "select * from employee order by lastName";
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                string sqlSelect = "select * from employee order by lastName";
 
-                  MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-                  MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-                  //gonna use this to fill a data table
-                  MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-                  //filling the data table
-                  sqlDa.Fill(sqlDt);
+                //gonna use this to fill a data table
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+                //filling the data table
+                sqlDa.Fill(sqlDt);
 
-                  //loop through each row in the dataset, creating instances
-                  //of our container class Account.  Fill each acciount with
-                  //data from the rows, then dump them in a list.
-                  List<Account> employees = new List<Account>();
-                  for (int i = 0; i < sqlDt.Rows.Count; i++)
-                  {
-                      //only share user id and pass info with admins!
-                      if (Convert.ToInt32(Session["admin"]) == 1)
-                      {
-                          employees.Add(new Account
-                          {
-                              eID = Convert.ToInt32(sqlDt.Rows[i]["eID"]),
-                              userName = sqlDt.Rows[i]["userName"].ToString(),
-                              password = sqlDt.Rows[i]["password"].ToString(),
-                              firstName = sqlDt.Rows[i]["firstName"].ToString(),
-                              lastName = sqlDt.Rows[i]["lastName"].ToString(),
-                              admin = Convert.ToInt32(sqlDt.Rows[i]["admin"]),
-                              email = sqlDt.Rows[i]["email"].ToString(),
-                              position = sqlDt.Rows[i]["position"].ToString()
-                          });
-                      }
-                      else
-                      {
-                          employees.Add(new Account
-                          {
-                              eID = Convert.ToInt32(sqlDt.Rows[i]["eID"]),
-                              firstName = sqlDt.Rows[i]["firstName"].ToString(),
-                              lastName = sqlDt.Rows[i]["lastName"].ToString(),
-                              admin = Convert.ToInt32(sqlDt.Rows[i]["admin"]),
-                              email = sqlDt.Rows[i]["email"].ToString(),
-                              position = sqlDt.Rows[i]["position"].ToString()
-                          });
-                      }
-                  }
-                  //convert the list of accounts to an array and return!
-                  return employees.ToArray();
-              }
+                //loop through each row in the dataset, creating instances
+                //of our container class Account.  Fill each acciount with
+                //data from the rows, then dump them in a list.
+                List<Account> employees = new List<Account>();
+                for (int i = 0; i < sqlDt.Rows.Count; i++)
+                {
+                    //only share user id and pass info with admins!
+                    if (Convert.ToInt32(Session["admin"]) == 1)
+                    {
+                        employees.Add(new Account
+                        {
+                            eID = Convert.ToInt32(sqlDt.Rows[i]["eID"]),
+                            userName = sqlDt.Rows[i]["userName"].ToString(),
+                            password = sqlDt.Rows[i]["password"].ToString(),
+                            firstName = sqlDt.Rows[i]["firstName"].ToString(),
+                            lastName = sqlDt.Rows[i]["lastName"].ToString(),
+                            admin = Convert.ToInt32(sqlDt.Rows[i]["admin"]),
+                            email = sqlDt.Rows[i]["email"].ToString(),
+                            position = sqlDt.Rows[i]["position"].ToString()
+                        });
+                    }
+                    else
+                    {
+                        employees.Add(new Account
+                        {
+                            eID = Convert.ToInt32(sqlDt.Rows[i]["eID"]),
+                            firstName = sqlDt.Rows[i]["firstName"].ToString(),
+                            lastName = sqlDt.Rows[i]["lastName"].ToString(),
+                            admin = Convert.ToInt32(sqlDt.Rows[i]["admin"]),
+                            email = sqlDt.Rows[i]["email"].ToString(),
+                            position = sqlDt.Rows[i]["position"].ToString()
+                        });
+                    }
+                }
+                //convert the list of accounts to an array and return!
+                return employees.ToArray();
+            }
             else
             {
                 //if they're not logged in, return an empty array
@@ -188,10 +188,9 @@ namespace foxhole
 
         // At first we are going to pass a single recipient and then later an array of recipients
         [WebMethod(EnableSession = true)]
-        public int CreateSurvey(int qID, int privacy, int asking_eID, string date, int recipient_eID) //'YYYY-MM-DD'
+        public int CreateSurvey(int qID, int privacy, int asking_eID, string date) // left recipient_eID out for testing
         {
             int surveyID = -1; // This is the id of the survey we will return
-            int responseID = -1;
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
             //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
@@ -228,35 +227,42 @@ namespace foxhole
 
             sqlConnection.Close(); // I am just closing and opening again for simplicity - optimize later
 
-            // Now we have to fill in the response table for the recipients
-            string sqlSelectResponse = $"insert into response (answer, date, eID, sID, completed) " +
-                $"values(null, null, {recipient_eID}, {surveyID}, 0); SELECT LAST_INSERT_ID();";
+            //for (int i = 0; i < recipients.Length; i++)
+            //{
+            //    string tempRecipient = recipients[i];
+            //    int tempRecipientNum = Convert.ToInt32(tempRecipient);
+            //    // Now we have to fill in the response table for the recipients
+            //    string sqlSelectResponse = $"insert into response (answer, date, eID, sID, completed) " +
+            //        $"values(null, null, {tempRecipientNum}, {surveyID}, 0); SELECT LAST_INSERT_ID();";
 
-            MySqlCommand sqlCommandResponse = new MySqlCommand(sqlSelectResponse, sqlConnection);
+            //    MySqlCommand sqlCommandResponse = new MySqlCommand(sqlSelectResponse, sqlConnection);
 
-            //sqlCommand.Parameters.AddWithValue("@qID", qID);
+            //    //sqlCommand.Parameters.AddWithValue("@qID", qID);
 
-            //this time, we're not using a data adapter to fill a data table.  We're just
-            //opening the connection, telling our command to "executescalar" which says basically
-            //execute the query and just hand me back the number the query returns (the ID, remember?).
-            //don't forget to close the connection!
-            sqlConnection.Open();
-            //we're using a try/catch so that if the query errors out we can handle it gracefully
-            //by closing the connection and moving on
-            try
-            {
-                responseID = Convert.ToInt32(sqlCommandResponse.ExecuteScalar());
-                // we currently dont do anything with this but we could return it
-            }
-            catch (Exception e)
-            {
-            }
+            //    //this time, we're not using a data adapter to fill a data table.  We're just
+            //    //opening the connection, telling our command to "executescalar" which says basically
+            //    //execute the query and just hand me back the number the query returns (the ID, remember?).
+            //    //don't forget to close the connection!
+            //    sqlConnection.Open();
+            //    //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //    //by closing the connection and moving on
+            //    try
+            //    {
+            //        Convert.ToInt32(sqlCommandResponse.ExecuteScalar());
+            //        // we currently dont do anything with this but we could return it
+            //        recipientSuccess = true;
+            //    }
+            //    catch (Exception e)
+            //    {
+            //    }
+            //    sqlConnection.Close();
+            //}
 
-            if (surveyID != -1 && responseID != -1)
+            if (surveyID != -1)
             {
                 return surveyID;
             }
-            sqlConnection.Close(); // I am just closing and opening again for simplicity - optimize later
+            sqlConnection.Close();
             return -1;
         }
 
@@ -431,7 +437,7 @@ namespace foxhole
         public int CreateAccount(string userName, string password, string firstName, string lastName, string email, string position)
         {
           int eID = -1;
-          string admin = "0";
+          string admin = "0";// defaults to non-admin user
           string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
           //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
           //does is tell mySql server to return the primary key of the last inserted row
@@ -475,6 +481,68 @@ namespace foxhole
           return eID;
         }
 
+        [WebMethod(EnableSession = true)]
+        public void UpdateAccount(string eID, string userName, string password, string firstName, string lastName, string email, string position)
+        {
+          //WRAPPING THE WHOLE THING IN AN IF STATEMENT TO CHECK IF THEY ARE AN ADMIN!
+          if (Convert.ToInt32(Session["admin"]) == 1)
+          {
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //this is a simple update, with parameters to pass in values
+            string sqlSelect = "update employee set userName=@userNameValue, password=@passwordValue, firstName=@firstNameValue, lastName=@lastNameValue, " +
+            "email=@emailValue where eID=@eIDValue";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@userNameValue", HttpUtility.UrlDecode(userName));
+            sqlCommand.Parameters.AddWithValue("@passwordValue", HttpUtility.UrlDecode(password));
+            sqlCommand.Parameters.AddWithValue("@firstNameValue", HttpUtility.UrlDecode(firstName));
+            sqlCommand.Parameters.AddWithValue("@lastNameValue", HttpUtility.UrlDecode(lastName));
+            sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
+            sqlCommand.Parameters.AddWithValue("@positionValue", HttpUtility.UrlDecode(position));
+            sqlCommand.Parameters.AddWithValue("@eIDValue", HttpUtility.UrlDecode(eID));
+
+            sqlConnection.Open();
+            //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //by closing the connection and moving on
+            try
+            {
+              sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+          }
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void DeleteAccount(int eID)
+        {
+          if (Convert.ToInt32(Session["admin"]) == 1)
+          {
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //this is a simple update, with parameters to pass in values
+            string sqlSelect = "delete from employee where eID = @eIDValue;";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@eIDValue", HttpUtility.UrlDecode(Convert.ToString(eID)));
+
+            sqlConnection.Open();
+            try
+            {
+              sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+
+            }
+            sqlConnection.Close();
+          }
+        }
 
 
 
@@ -505,6 +573,7 @@ namespace foxhole
 
 
 
+    // These are old delete them for production>>>>>>>
 
 
 
@@ -614,41 +683,6 @@ namespace foxhole
         }
 
         //EXAMPLE OF AN UPDATE QUERY WITH PARAMS PASSED IN
-        [WebMethod(EnableSession = true)]
-        public void UpdateAccount(string eID, string userName, string password, string firstName, string lastName, string email, string position)
-        {
-            //WRAPPING THE WHOLE THING IN AN IF STATEMENT TO CHECK IF THEY ARE AN ADMIN!
-            if (Convert.ToInt32(Session["admin"]) == 1)
-            {
-                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-                //this is a simple update, with parameters to pass in values
-                string sqlSelect = "update employee set userName=@userNameValue, password=@passwordValue, firstName=@firstNameValue, lastName=@lastNameValue, " +
-                    "email=@emailValue where eID=@eIDValue";
-
-                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-                sqlCommand.Parameters.AddWithValue("@userNameValue", HttpUtility.UrlDecode(userName));
-                sqlCommand.Parameters.AddWithValue("@passwordValue", HttpUtility.UrlDecode(password));
-                sqlCommand.Parameters.AddWithValue("@firstNameValue", HttpUtility.UrlDecode(firstName));
-                sqlCommand.Parameters.AddWithValue("@lastNameValue", HttpUtility.UrlDecode(lastName));
-                sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
-                sqlCommand.Parameters.AddWithValue("@positionValue", HttpUtility.UrlDecode(position));
-                sqlCommand.Parameters.AddWithValue("@eIDValue", HttpUtility.UrlDecode(eID));
-
-                sqlConnection.Open();
-                //we're using a try/catch so that if the query errors out we can handle it gracefully
-                //by closing the connection and moving on
-                try
-                {
-                    sqlCommand.ExecuteNonQuery();
-                }
-                catch (Exception e)
-                {
-                }
-                sqlConnection.Close();
-            }
-        }
         //EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
         [WebMethod(EnableSession = true)]
         public Account[] GetAccountRequests()
@@ -687,34 +721,7 @@ namespace foxhole
             }
         }
 
-    //EXAMPLE OF A DELETE QUERY
-    [WebMethod(EnableSession = true)]
-      public void DeleteAccount(int eID)
-      {
-      if (Convert.ToInt32(Session["admin"]) == 1)
-      {
-        string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-        //this is a simple update, with parameters to pass in values
-        string sqlSelect = "delete from employee where eID = @eIDValue;";
-
-        MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-        MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-        sqlCommand.Parameters.AddWithValue("@eIDValue", HttpUtility.UrlDecode(Convert.ToString(eID)));
-
-        sqlConnection.Open();
-        try
-        {
-          sqlCommand.ExecuteNonQuery();
-        }
-        catch (Exception e)
-        {
-
-        }
-        sqlConnection.Close();
-      }
-      }
-
+    //EXAMPLE OF A DELETE QUER
         //EXAMPLE OF AN UPDATE QUERY
         [WebMethod(EnableSession = true)]
         public void ActivateAccount(string id)

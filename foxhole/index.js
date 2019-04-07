@@ -4,6 +4,7 @@ let surveyQuestions = undefined;
 let employees = undefined;
 let unrespondedSurveys = undefined;
 let surveyToTake = undefined;
+let surveyID = undefined;
 
 // content panels used in hiding showing
 const contentPanels = [
@@ -16,7 +17,7 @@ const contentPanels = [
   'editAccountTab',
   'createAccountTab'
 ];
-
+ 
 // login form submit handler
 function handleLoginFormSubmit(e) {
   e.preventDefault();
@@ -33,6 +34,10 @@ function clearLogOnForm() {
 }
 
 function renderHomePage() {
+  document.querySelector('#createAccountTab').style.height = "0px";
+  document.querySelector('#editAccountTab').style.height = "0px";
+
+
   document.querySelector('#homeTab').innerHTML = 
     ` <h2 class="w3-margin w3-text-indigo">Hi there!</h2>
       <h2 class="w3-margin w3-text-indigo">Welcome to Foxhole</h2>
@@ -43,7 +48,7 @@ function renderHomePage() {
 function renderAccountManagementPage() {
   if (userInfo.admin ==1) {
     document.querySelector('#manageTab').innerHTML =
-      `<div class="w3-container">
+      `<div class="w3-container  w3-display-middle-top">
         <h3 class="w3-text-teal">Accounts currently registered with Foxhole</h3>
         <div class="w3-right">
           <button onclick="renderAccountPage(userInfo)" id="returnButton">Return to your Account</button>
@@ -51,6 +56,11 @@ function renderAccountManagementPage() {
         <div class="w3-left">
             <button onclick="handleCreateAccountClick(this)" id="createAccountButton">Create new Account</button>
         </div>
+       </div>
+       <div class="w3-container">
+       <div class="w3-section">
+         <ul id="userAccountList" class="w3-ul w3-card-4 w3-white"></ul>
+       </div>
        </div>
        <br>`
        GetAccounts();
@@ -120,7 +130,7 @@ function renderUnrespondedSurveys() {
         </div>
       </li>`
   });
-}
+}  
 
 function renderEmployeeAccounts(employees) {
     document.querySelector('#manageTab').innerHTML += `
@@ -129,7 +139,11 @@ function renderEmployeeAccounts(employees) {
   </div>
   `
     document.querySelector('#userAccountList').innerHTML = "";
-   
+    document.querySelector('#accountTab').style.height = "0px";
+    document.querySelector('#surveyTab').style.height = "0px";
+    document.querySelector('#responseTab').style.height = "0px";
+
+
     employees.map(function (employee, index) {
         console.log(employee);
         document.querySelector('#userAccountList').innerHTML += `
@@ -158,11 +172,9 @@ function handleLogoffClick() {
 }
 
 function handleCreateSurveyClick() {
-    window.alert('create survey clicked');
-    renderSurveyPage();
+  window.alert('create survey clicked');
+  renderSurveyPage();
   showPanel('surveyTab');
-  GetSurvey(3);
-  console.log(unrespondedSurveys);
 }
 
 function handleDeleteAccountClick(event) {
@@ -180,11 +192,15 @@ function handleEditAccountClick(event) {
 function handleCreateAccountClick(e) {
     //clear the questions list
     document.querySelector('#userAccountList').innerHTML = "";
+    document.querySelector('#accountTab').style.height = "0px";
+    document.querySelector('#surveyTab').style.height = "0px";
     showPanel('createAccountTab')
 }
 
 function renderEditAccountForm(eID) {
     showPanel('editAccountTab');
+    document.querySelector('#accountTab').style.height = "0px";
+    document.querySelector('#surveyTab').style.height = "0px";
     console.log(employees);
     console.log(eID);
 
@@ -236,88 +252,119 @@ function handleCreateAccountFormSubmit(e) {
 
 
 function renderSurveyPage() {
-    document.querySelector('#surveyTab').innerHTML =
-        `<style>
-        body {
-	          font-family: Arial;
-	        }
+  GetSurveyQuestions();
+  document.querySelector('#accountTab').style.height = "0px";
+  console.log(surveyQuestions);
+  GetAccounts();
+  sleep(5000).then(() => {
+    //const sQuestions = GetSurveyQuestions();
+    console.log(surveyQuestions);
+    const questionContainer = document.querySelector('#questionContainer');
 
-	        #question, #recipient {
-	          width: 100%; 
-	          padding: 12px 20px;
-	          margin: 8px 0;
-	          display: block;
-	          border: 1px solid #ccc;
-	          border-radius: 4px;
-	          box-sizing: border-box;
-	        }
+    surveyQuestions.map(function (question) {
+      console.log(question.text);
+      questionContainer.innerHTML += `<option data-qID=${question.qID} value="example1">${question.text}</option>`;
+    });
 
-	        #anonymous {
-	          padding: 12px 20px;
-	          margin: 8px 0;
-	          display: block;
-	          border: 1px solid #ccc;
-	          border-radius: 4px;
-	          box-sizing: border-box;
-	        }
-
-	        input[type=submit] {
-	          width: 100%;
-	          background-color: #4CAF50;
-	          color: white;
-	          padding: 14px 20px;
-	          margin: 8px 0;
-	          border: none;
-	          border-radius: 4px;
-	          cursor: pointer;
-	        }
-
-	        input[type=submit]:hover {
-	          background-color: #45a049;
-	        }
-
-	        div.container {
-	          border-radius: 5px;
-	          background-color: #f2f2f2;
-	          padding: 20px;
-	        }
-        </style>
-
-        <div class="w3-container">
-	        <form id="surveyForm">
-                <div class="container">
-
-      	            <h3 style="text-align: center;">Create A New Survey</h3>
-
-                    <label for="ques"><b>Question</b></label>
-                    <select name="ques" id="question">
-        	            <option value="example1">Example 1</option>
-        	            <option value="example2">Example 2</option>
-        	            <option value="example3">Example 3</option>
-                    </select>
-
-                    <label for="anon"><b>Anonymous? (Check If Yes)</b></label>
-                    <input type="checkbox" name="anon" id="anonymous">
-
-		            <label for="recipient"><b>Survey Recipient (Email)</b></label>
-		            <input type="text" name="recipient" id="recipient">
+    const employeeContainer = document.querySelector('#employeeContainer');
+    console.log(employees);
+    employees.map(function (employee) {
+      employeeContainer.innerHTML += `<option data-eID=${employee.eID}">${employee.email}</option>`;
+    });
+  });
 
 
-                    <input type="submit" value="Create Survey">
-                 </div>
-            </form>
-        </div>`
+  //surveyQuestions.map(function (question) {
+  //  questionContainer.innerHTML = question.questionText;
+  //})
+  
 }
 
-function handleUserResponseClick() {
-    window.alert('user response initiated');
-    renderUserResponsePage();
-    showPanel('responseTab');
+function handleUserResponseSubmit(e) {
+  e.preventDefault;
+  console.log(e);
+  alert('response form submitted');
+
+  // qID, privacy, asking_eID, date, int[] recipient_eID
+  let qID = getSelectedQuestion();
+  let privacy = undefined;
+  if (document.querySelector('#anonymous').checked) {
+    privacy = 1;
+  } else {
+    privacy =0
+  }
+  let asking_eID = employees[0].eID;
+  let d = new Date();
+  let datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  console.log(datestring);
+
+  let recipients = getSelectedEmployees();
+  console.log(qID, privacy, asking_eID, datestring, recipients[0]);
+
+  showPanel('accountTab');
+
+  CreateSurvey(qID, privacy, asking_eID, datestring); // saves to global
+  console.log(surveyID);
+  sleep(10000).then(() => {
+    recipients.map(function (recipient) {
+      //FillRecipientsTable(recipient, surveyID);
+      sleep(10000).then(() => {
+        console.log(recipient);
+        // pause to allow service to execute
+        // fillrecipientstable(4, 2); /// testing
+        FillRecipientsTable(recipient, surveyID);
+
+      })
+    });
+  });
+  alert('recipient Table successfully filled');
 }
+
+// returns the recipients as array of ints to be consumed by the CreateSurvey() service
+function getSelectedQuestion() {
+  let questionContainer = document.getElementById('questionContainer'), question, i;
+  let selectedQuestion = undefined;
+
+  for (i = 0; i < questionContainer.length; i++) {
+    question = questionContainer.options[i];
+    if (question.selected) {
+      console.log(question);
+      let selectedQID = questionContainer.options[i].getAttribute("data-qid");
+      selectedQID = parseInt(selectedQID);
+      console.log(selectedQID);
+      selectedQuestion = selectedQID;
+    }
+  }
+  return selectedQuestion;
+}
+
+// returns the recipients as array of ints to be consumed by the CreateSurvey() service
+function getSelectedEmployees() {
+  let employeeContainer = document.getElementById('employeeContainer'), employee, i;
+  let employeeArray = [];
+
+  for (i = 0; i < employeeContainer.length; i++) {
+    employee = employeeContainer.options[i];
+    if (employee.selected) {
+      console.log(employee);
+      let recipientEID = employeeContainer.options[i].getAttribute("data-eid");
+      recipientEID = parseInt(recipientEID);
+      console.log(recipientEID);
+      employeeArray.push(recipientEID);
+    }
+  }
+  return employeeArray;
+}
+
+//function handleUserResponseClick() {
+//    window.alert('user response initiated');
+//    renderUserResponsePage();
+//    showPanel('responseTab');
+//}
 
 function renderUserResponsePage(e) {
   console.log(e);
-  const sID = e.getAttribute("data-sID");
+  const sID = e.getAttribute("data-sID"); 
   console.log(sID);
   GetSurvey(sID); // sends a response to the global surveyToTake variable
   sleep(5000).then(() => {
@@ -352,6 +399,42 @@ function renderUserResponsePage(e) {
     // then render the questions
   })
     
+}
+
+function renderUserResponsePageFromURL(sID) {
+  GetSurvey(sID); // sends a response to the global surveyToTake variable
+  sleep(5000).then(() => {
+    console.log(surveyToTake);
+    document.querySelector('#responseTab').innerHTML =
+      `
+        <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
+            <div class="w3-card-4">
+            <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
+            <form id="my-survey-form" class="w3-container">
+                <div class="w3-padding-16">
+                <label class="w3-text-teal"><b>Question</b></label>
+                <p id="questionText">${surveyToTake[0].questionText}</p>
+                <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
+                <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
+                <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
+                </div>
+                <div class="w3-padding-16">
+                <input id="createQuestionButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                </div>
+            </form>
+            </div>
+        </div>
+        <script>
+		    function sliderChange(val) {
+     		    document.getElementById('responseOutput').innerHTML = val;
+		        }
+	    </script>
+        `
+    showPanel('responseTab');
+
+    // then render the questions
+  })
+
 }
 
 function handleCreateNewQuestionClick() {
@@ -418,6 +501,32 @@ function sendTestEmail() {
     });
 }
 
+//// ?x=Hello
+//function parseURLForQueryString(variable) {
+//  var query = window.location.search.substring(1);
+//  console.log(query);
+//  var vars = query.split('&');
+//  console.log(vars);
+//  for (var i = 0; i < vars.length; i++) {
+//    var pair = vars[i].split('=');
+//    console.log(pair);
+//    if (decodeURIComponent(pair[0]) == variable) {
+//      return decodeURIComponent(pair[1]);
+//    }
+//    else {
+//      return null;
+//    }
+//  }
+//}
+
+//// $.urlParam('param1');
+//$.urlParam = function (name) {
+//  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+//  if (results == null) {
+//    return null;
+//  }
+//  return decodeURI(results[1]) || 0;
+//}
 
 // Services
 // Utilizes the LogOn C# Web Service
@@ -433,8 +542,14 @@ function LogOn(userName, password) {
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     success: function (msg) {
-        if (msg.d.loggedIn) {
-        alert("logon success");
+    if (msg.d.loggedIn) {
+      alert("logon success");
+      let searchParams = new URLSearchParams(window.location.search)
+      console.log(searchParams);
+      //searchParams.has('sent')
+      //console.log(queryString);
+      console.log(searchParams.has('sID'));
+      if (searchParams.has('sID') == false) {
         userInfo = msg.d;
         console.log(userInfo); // remove for production
         clearLogOnForm();
@@ -443,9 +558,22 @@ function LogOn(userName, password) {
         renderAccountPage(userInfo);
         return true;
       } else {
+        alert('this is where we show the other page');
+        let searchParams = new URLSearchParams(window.location.search)
+        let param = searchParams.get('sID');
+        console.log(param); // we will use this to actually show the survey
+        userInfo = msg.d;
+        console.log(userInfo); // remove for production
+        clearLogOnForm();
+        hideModal();
+        clearHomeTab();
+        renderUserResponsePageFromURL(param);
+        return true;
+      }
+      } else {
         //server replied false, so let the user know
         //the logon failed
-        alert('logon failed');
+      alert('logon failed');
         return false;
       }
     },
@@ -499,19 +627,20 @@ function GetAccounts() {
 function GetSurveyQuestions() {
     var webMethod = 'AccountServices.asmx/GetAllSurveyQuestions';
     $.ajax({
-        type: 'POST',
-        url: webMethod,
-        //data: parameters,
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: function (msg) {
-            console.log(msg.d);
-            surveyQuestions = msg.d;
-            return msg.d;
-        },
-        error: function (e) {
-            alert('Error getting questing from API');
-        }
+      type: 'POST',
+      url: webMethod,
+      //data: parameters,
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      success: function (msg) {
+        console.log(msg.d);
+        surveyQuestions = msg.d;
+        console.log(surveyQuestions);
+        return msg.d;
+      },
+      error: function (e) {
+          alert('Error getting questing from API');
+      }
     });
 }
 
@@ -552,6 +681,50 @@ function GetSurvey(sID) {
       return msg.d;
     },
     error: function (e) {
+      alert('Error getting survey from API');
+    }
+  });
+}
+//int qID, int privacy, int asking_eID, string date
+function CreateSurvey(qID, privacy, asking_eID, date, recipients) { // add recipient_eID in later
+  var webMethod = 'AccountServices.asmx/CreateSurvey';
+  var parameters = `{"qID": ${encodeURI(qID)}, "privacy": ${encodeURI(privacy)}, "asking_eID": ${encodeURI(asking_eID)}, "date": "${encodeURI(date)}"}` //"recipient_eID": ${encodeURI(recipient_eID)}
+  console.log(parameters);
+  $.ajax({
+    type: 'POST',
+    url: webMethod,
+    data: parameters,
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    success: function (msg) {
+      alert('Survey successfully created');
+      console.log(msg.d);
+      surveyID = msg.d;
+      return msg.d;
+    },
+    error: function (e) {
+      console.log(e);
+      alert('Error creating Survey');
+    }
+  });
+}
+
+function FillRecipientsTable(recipient_eID, surveyID) {
+  var webMethod = 'AccountServices.asmx/FillRecipientsTable';
+  var parameters = `{"recipient_eID": ${encodeURI(recipient_eID)}, "surveyID": ${encodeURI(surveyID)}}` //"recipient_eID": ${encodeURI(recipient_eID)}
+  console.log(parameters);
+  $.ajax({
+    type: 'POST',
+    url: webMethod,
+    data: parameters,
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    success: function (msg) {
+      console.log(msg.d);
+      return msg.d;
+    },
+    error: function (e) {
+      console.log(e);
       alert('Error getting survey from API');
     }
   });
