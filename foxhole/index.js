@@ -72,10 +72,9 @@ function renderAccountManagementPage() {
 }
 
 function renderAccountPage(userInfo) {
-  if (userInfo.admin == 1) {
-    // show admin account page
+    // show account page
     document.querySelector('#accountTab').innerHTML =
-      `<div class="w3-container">
+        `<div class="w3-container">
         <img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
         <h3 class="w3-text-teal">hello ${userInfo.userName}</h3>
         <a style="text-decoration: underline; cursor: pointer;" class="w3-text-indigo" onClick="renderAccountManagementPage()" id="manageAccount-button">Manage Accounts</a>
@@ -95,20 +94,22 @@ function renderAccountPage(userInfo) {
 
     GetUnrespondedSurveys(userInfo.eID);
     sleep(5000).then(() => {
-      renderUnrespondedSurveys();
-      
-      // then render the questions
+        renderUnrespondedSurveys();
+
+        // then render the questions
     })
-   
+
     // render the questions that the user created
     //GetUserSurveys(userInfo.id);
-  } else {
-    // show pleb account
 
-  }
-
-  // show the rendered page
-  showPanel('accountTab');
+    // hides admin features from regular user
+    if (userInfo.admin != 1) {
+        document.getElementById('manageAccount-button')    // show pleb account
+            .style.display = 'none';
+        document.getElementById('createSurveyButton').style.display = 'none';
+    }
+    // show the rendered page
+    showPanel('accountTab');
 }
 
 function renderUnrespondedSurveys() {
@@ -408,6 +409,7 @@ function renderUserResponsePageFromURL(sID) {
                 <div class="w3-padding-16">
                 <label class="w3-text-teal"><b>Question</b></label>
                 <p id="questionText">${surveyToTake[0].questionText}</p>
+                <p>Label Test</p>
                 <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
                 <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
                 <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
@@ -446,6 +448,7 @@ function renderCreateNewQuestionPage() {
             <form id="createQuestionForm" class="w3-container">
               <div class="w3-padding-16">
                 <label class="w3-text-teal"><b>Question text</b></label>
+  
                 <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text">
               </div>
               <div class="w3-padding-16">
