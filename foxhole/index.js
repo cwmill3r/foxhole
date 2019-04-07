@@ -140,8 +140,6 @@ function renderEmployeeAccounts(employees) {
   `
     document.querySelector('#userAccountList').innerHTML = "";
     document.querySelector('#accountTab').style.height = "0px";
-    document.querySelector('#surveyTab').style.height = "0px";
-    document.querySelector('#responseTab').style.height = "0px";
 
 
     employees.map(function (employee, index) {
@@ -192,15 +190,11 @@ function handleEditAccountClick(event) {
 function handleCreateAccountClick(e) {
     //clear the questions list
     document.querySelector('#userAccountList').innerHTML = "";
-    document.querySelector('#accountTab').style.height = "0px";
-    document.querySelector('#surveyTab').style.height = "0px";
     showPanel('createAccountTab')
 }
 
 function renderEditAccountForm(eID) {
     showPanel('editAccountTab');
-    document.querySelector('#accountTab').style.height = "0px";
-    document.querySelector('#surveyTab').style.height = "0px";
     console.log(employees);
     console.log(eID);
 
@@ -247,13 +241,13 @@ function handleCreateAccountFormSubmit(e) {
     //document.querySelector('createAccountTab').innerHTML = "";
 }
 
-
-
-
-
 function renderSurveyPage() {
   GetSurveyQuestions();
   document.querySelector('#accountTab').style.height = "0px";
+  document.querySelector('#responseTab').style.height = "0px";
+  document.querySelector('#manageTab').style.height = "0px";
+
+
   console.log(surveyQuestions);
   GetAccounts();
   sleep(5000).then(() => {
