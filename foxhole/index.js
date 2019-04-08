@@ -93,7 +93,7 @@ function renderAccountPage(userInfo) {
     // render the surveys that an employee has not yet responded to
 
     GetUnrespondedSurveys(userInfo.eID);
-    sleep(5000).then(() => {
+    sleep(10000).then(() => {
         renderUnrespondedSurveys();
 
         // then render the questions
@@ -275,7 +275,7 @@ function renderSurveyPage() {
   
 }
 
-function handleUserResponseSubmit(e) {
+function handleCreateSurveySubmit(e) {
   e.preventDefault;
   console.log(e);
   alert('response form submitted');
@@ -425,6 +425,7 @@ function renderUserResponsePage(e) {
 }
 
 function renderUserResponsePageFromURL(sID) {
+
   GetSurvey(sID); // sends a response to the global surveyToTake variable
   sleep(5000).then(() => {
     console.log(surveyToTake);
@@ -442,22 +443,35 @@ function renderUserResponsePageFromURL(sID) {
                 <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
                 </div>
                 <div class="w3-padding-16">
-                <input id="createQuestionButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
-                </div>
+                <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                </div> 
             </form>
             </div>
         </div>
-        <script>
-		    function sliderChange(val) {
-     		    document.getElementById('responseOutput').innerHTML = val;
-		        }
-	    </script>
         `
     showPanel('responseTab');
 
     // then render the questions
   })
 
+}
+
+function sliderChange(val) {
+  document.getElementById('responseOutput').innerHTML = val;
+}
+
+function handleSurveySubmit(e) {
+  console.log(e);
+  let eID = userInfo.eID;
+  console.log(surveyToTake[0].sID);
+  let sID = parseInt(surveyToTake[0].sID);
+  let d = new Date();
+  let datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  console.log(datestring);
+  let answerValue = parseInt(document.querySelector('#responseOutput').value);
+  console.log(answerValue)
+  let success = SubmitSurveyResponse(eID, sID, answerValue, datestring);
+  console.log(success);
 }
 
 function handleCreateNewQuestionClick() {
@@ -515,7 +529,7 @@ function sendRecipientEmails(sID, recipientEmailString) {
   // SENDING AN EMAIL STUFF
   var templateParams = {
     surveyURL: `http://localhost:50406?sID=${sID}`,
-    recipients: `chris.wayne.miller@gmail.com, parum.luceat@gmail.com`
+    recipients: `${recipientEmailString}`
   };
 
   emailjs.send('default_service', 'surveylink', templateParams)
@@ -841,9 +855,31 @@ function CreateAccount(userName, password, firstName, lastName, email, position)
     });
 }
 
-
-
-
+function SubmitSurveyResponse(eID, sID, answer, date) {
+  var webMethod = 'AccountServices.asmx/SubmitSurveyResponse';
+  var parameters = `{
+    "eID": ${eID},
+    "sID" : ${sID},
+    "answer" : ${answer},
+    "date" : "${encodeURI(date)}"
+  }`;
+  console.log(parameters);
+  $.ajax({
+    type: 'POST',
+    url: webMethod,
+    data: parameters,
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    success: function (msg) {
+      alert('Survey Response submitted successfully');
+      console.log(msg);
+    },
+    error: function (e) {
+      alert('Error submitting survey response');
+      console.log(e);
+    }
+  });
+}
 
 // login form submit event listener
 document.querySelector('#loginForm').addEventListener('submit', function (e) {

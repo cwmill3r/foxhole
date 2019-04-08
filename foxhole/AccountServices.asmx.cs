@@ -544,6 +544,37 @@ namespace foxhole
           }
         }
 
+        [WebMethod(EnableSession = true)]
+        public int SubmitSurveyResponse(int eID, int sID, int answer, string date)
+        {
+            int success = -1; // the response ID we will return at the end
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
+            //does is tell mySql server to return the primary key of the last inserted row
+            string sqlSelect = $"update response set answer=@answer, date=@date, completed=1 where eID=@eID and sID=@sID and completed=0";
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            //sqlCommand.Parameters.AddWithValue("@eId", eId);
+            sqlCommand.Parameters.AddWithValue("@eID", eID);
+            sqlCommand.Parameters.AddWithValue("@sID", sID);
+            sqlCommand.Parameters.AddWithValue("@answer", answer);
+            sqlCommand.Parameters.AddWithValue("@date", HttpUtility.UrlDecode(date));
+
+            sqlConnection.Open();
+            //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //by closing the connection and moving on
+            try
+            {
+                Convert.ToInt32(sqlCommand.ExecuteScalar());
+                return success = 1;
+            }
+            catch (Exception e)
+            {
+                return success;
+            }
+        }
 
 
 
@@ -573,12 +604,13 @@ namespace foxhole
 
 
 
-    // These are old delete them for production>>>>>>>
+
+        // These are old delete them for production>>>>>>>
 
 
 
-    //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
-    [WebMethod(EnableSession = true)]
+        //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
+        [WebMethod(EnableSession = true)]
         public void RequestAccount(string uid, string pass, string firstName, string lastName, string email)
         {
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
