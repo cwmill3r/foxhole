@@ -5,6 +5,7 @@ let employees = undefined;
 let unrespondedSurveys = undefined;
 let surveyToTake = undefined;
 let surveyID = undefined;
+let clickingLink = false;
 
 // content panels used in hiding showing
 const contentPanels = [
@@ -93,14 +94,6 @@ function renderAccountPage(userInfo) {
     // render the surveys that an employee has not yet responded to
 
     GetUnrespondedSurveys(userInfo.eID);
-    sleep(10000).then(() => {
-        renderUnrespondedSurveys();
-
-        // then render the questions
-    })
-
-    // render the questions that the user created
-    //GetUserSurveys(userInfo.id);
 
     // hides admin features from regular user
     if (userInfo.admin != 1) {
@@ -113,11 +106,8 @@ function renderAccountPage(userInfo) {
 }
 
 function renderUnrespondedSurveys() {
-  alert('Hello from unresponded survey thing...speed up for production');
-  console.log(unrespondedSurveys);
   document.querySelector('#surveyContainer').innerHTML += `<h3>Unresponded Surveys</h3>`;
   unrespondedSurveys.map(function (survey) {
-    console.log(survey);
     document.querySelector('#userSurveyList').innerHTML +=
       `<li class="w3-bar">
         <span data-sID=${survey.sID} onClick="renderUserResponsePage(this)" class="takeSurveyButton w3-bar-item w3-button w3-xlarge w3-right">
@@ -144,7 +134,6 @@ function renderEmployeeAccounts(employees) {
 
 
     employees.map(function (employee, index) {
-        console.log(employee);
         document.querySelector('#userAccountList').innerHTML += `
       <li class="w3-bar">
         <span data-eID=${employee.eID} onclick="handleDeleteAccountClick(this)" class="accountDeleteButton w3-bar-item w3-button w3-xlarge w3-right">
@@ -171,7 +160,6 @@ function handleLogoffClick() {
 }
 
 function handleCreateSurveyClick() {
-  window.alert('create survey clicked');
   renderSurveyPage();
   showPanel('surveyTab');
 }
@@ -247,38 +235,10 @@ function renderSurveyPage() {
   document.querySelector('#accountTab').style.height = "0px";
   document.querySelector('#responseTab').style.height = "0px";
   document.querySelector('#manageTab').style.height = "0px";
-
-
-  console.log(surveyQuestions);
-  GetAccounts();
-  sleep(5000).then(() => {
-    //const sQuestions = GetSurveyQuestions();
-    console.log(surveyQuestions);
-    const questionContainer = document.querySelector('#questionContainer');
-
-    surveyQuestions.map(function (question) {
-      console.log(question.text);
-      questionContainer.innerHTML += `<option data-qID=${question.qID} value="example1">${question.text}</option>`;
-    });
-
-    const employeeContainer = document.querySelector('#employeeContainer');
-    console.log(employees);
-    employees.map(function (employee) {
-      employeeContainer.innerHTML += `<option data-eID=${employee.eID}">${employee.email}</option>`;
-    });
-  });
-
-
-  //surveyQuestions.map(function (question) {
-  //  questionContainer.innerHTML = question.questionText;
-  //})
-  
 }
 
 function handleCreateSurveySubmit(e) {
   e.preventDefault;
-  console.log(e);
-  alert('response form submitted');
 
   // qID, privacy, asking_eID, date, int[] recipient_eID
   let qID = getSelectedQuestion();
@@ -291,21 +251,17 @@ function handleCreateSurveySubmit(e) {
   let asking_eID = employees[0].eID;
   let d = new Date();
   let datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-  console.log(datestring);
 
   let recipients = getSelectedEmployees();
-  console.log(qID, privacy, asking_eID, datestring, recipients[0]);
   let recipientEmailAddresses = getSelectedEmployeesEmails();
-  console.log(recipientEmailAddresses);
   showPanel('accountTab');
 
+  // It doesn't matter if this stuff is slow because it happens behind the scenes
   CreateSurvey(qID, privacy, asking_eID, datestring); // saves to global
-  console.log(surveyID);
   sleep(10000).then(() => {
     recipients.map(function (recipient) {
       //FillRecipientsTable(recipient, surveyID);
       sleep(10000).then(() => {
-        console.log(recipient);
         // pause to allow service to execute
         // fillrecipientstable(4, 2); /// testing
         FillRecipientsTable(recipient, surveyID);
@@ -313,7 +269,6 @@ function handleCreateSurveySubmit(e) {
       })
     });
   });
-  alert('recipient Table successfully filled');
 
   sleep(10000).then(() => {
     sendRecipientEmails(surveyID, recipientEmailAddresses);
@@ -328,10 +283,8 @@ function getSelectedQuestion() {
   for (i = 0; i < questionContainer.length; i++) {
     question = questionContainer.options[i];
     if (question.selected) {
-      console.log(question);
       let selectedQID = questionContainer.options[i].getAttribute("data-qid");
       selectedQID = parseInt(selectedQID);
-      console.log(selectedQID);
       selectedQuestion = selectedQID;
     }
   }
@@ -345,9 +298,7 @@ function getSelectedEmployeesEmails() {
   for (i = 0; i < employeeContainer.length; i++) {
     employee = employeeContainer.options[i];
     if (employee.selected) {
-      console.log(employee);
       let recipientEmail = employeeContainer.options[i].value + "," + " ";
-      console.log(recipientEmail);
       recipientEmails.push(recipientEmail);
     }
   }
@@ -357,7 +308,6 @@ function getSelectedEmployeesEmails() {
   recipientEmails.map(function (email) {
     recipientEmailString += email
   })
-  console.log(recipientEmailString);
   return recipientEmailString;
 }
 
@@ -369,10 +319,8 @@ function getSelectedEmployees() {
   for (i = 0; i < employeeContainer.length; i++) {
     employee = employeeContainer.options[i];
     if (employee.selected) {
-      console.log(employee);
       let recipientEID = employeeContainer.options[i].getAttribute("data-eid");
       recipientEID = parseInt(recipientEID);
-      console.log(recipientEID);
       employeeArray.push(recipientEID);
     }
   }
@@ -386,68 +334,64 @@ function getSelectedEmployees() {
 //}
 
 function renderUserResponsePage(e) {
-  console.log(e);
   const sID = e.getAttribute("data-sID"); 
-  console.log(sID);
   GetSurvey(sID); // sends a response to the global surveyToTake variable
-  sleep(5000).then(() => {
-    console.log(surveyToTake);
-    document.querySelector('#responseTab').innerHTML =
-      `
-        <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
-            <div class="w3-card-4">
-            <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
-            <form id="my-survey-form" class="w3-container">
-                <div class="w3-padding-16">
-                <label class="w3-text-teal"><b>Question</b></label>
-                <p id="questionText">${surveyToTake[0].questionText}</p>
-                <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
-                <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
-                <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
-                </div>
-                <div class="w3-padding-16">
-                <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
-                </div> 
-            </form>
-            </div>
-        </div>
-        `
-    showPanel('responseTab');
+  //sleep(5000).then(() => {
+  //  document.querySelector('#responseTab').innerHTML =
+  //    `
+  //      <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
+  //          <div class="w3-card-4">
+  //          <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
+  //          <form id="my-survey-form" class="w3-container">
+  //              <div class="w3-padding-16">
+  //              <label class="w3-text-teal"><b>Question</b></label>
+  //              <p id="questionText">${surveyToTake[0].questionText}</p>
+  //              <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
+  //              <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
+  //              <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
+  //              </div>
+  //              <div class="w3-padding-16">
+  //              <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+  //              </div> 
+  //          </form>
+  //          </div>
+  //      </div>
+  //      `
+  //  showPanel('responseTab');
 
     // then render the questions
-  })
+  //})
     
 }
 
 function renderUserResponsePageFromURL(sID) {
 
   GetSurvey(sID); // sends a response to the global surveyToTake variable
-  sleep(5000).then(() => {
-    console.log(surveyToTake);
-    document.querySelector('#responseTab').innerHTML =
-      `
-        <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
-            <div class="w3-card-4">
-            <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
-            <form id="my-survey-form" class="w3-container">
-                <div class="w3-padding-16">
-                <label class="w3-text-teal"><b>Question</b></label>
-                <p id="questionText">${surveyToTake[0].questionText}</p>
-                <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
-                <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
-                <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
-                </div>
-                <div class="w3-padding-16">
-                <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
-                </div> 
-            </form>
-            </div>
-        </div>
-        `
-    showPanel('responseTab');
+  //sleep(5000).then(() => {
+  //  document.querySelector('#responseTab').innerHTML =
+  //    `
+  //      <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
+  //          <div class="w3-card-4">
+  //          <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
+  //          <form id="my-survey-form" class="w3-container">
+  //              <div class="w3-padding-16">
+  //              <label class="w3-text-teal"><b>Question</b></label>
+  //              <p id="questionText">${surveyToTake[0].questionText}</p>
+  //              <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
+  //              <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
+  //              <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
+  //              </div>
+  //              <div class="w3-padding-16">
+  //              <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+  //              </div> 
+  //          </form>
+  //          </div>
+  //      </div>
+  //      `
+  //  showPanel('responseTab');
 
-    // then render the questions
-  })
+  //  // then render the questions
+  //})
 
 }
 
@@ -456,17 +400,12 @@ function sliderChange(val) {
 }
 
 function handleSurveySubmit(e) {
-  console.log(e);
   let eID = userInfo.eID;
-  console.log(surveyToTake[0].sID);
   let sID = parseInt(surveyToTake[0].sID);
   let d = new Date();
   let datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-  console.log(datestring);
   let answerValue = parseInt(document.querySelector('#responseOutput').value);
-  console.log(answerValue)
   let success = SubmitSurveyResponse(eID, sID, answerValue, datestring);
-  console.log(success);
 }
 
 function handleCreateNewQuestionClick() {
@@ -535,33 +474,6 @@ function sendRecipientEmails(sID, recipientEmailString) {
     });
 }
 
-//// ?x=Hello
-//function parseURLForQueryString(variable) {
-//  var query = window.location.search.substring(1);
-//  console.log(query);
-//  var vars = query.split('&');
-//  console.log(vars);
-//  for (var i = 0; i < vars.length; i++) {
-//    var pair = vars[i].split('=');
-//    console.log(pair);
-//    if (decodeURIComponent(pair[0]) == variable) {
-//      return decodeURIComponent(pair[1]);
-//    }
-//    else {
-//      return null;
-//    }
-//  }
-//}
-
-//// $.urlParam('param1');
-//$.urlParam = function (name) {
-//  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-//  if (results == null) {
-//    return null;
-//  }
-//  return decodeURI(results[1]) || 0;
-//}
-
 // Services
 // Utilizes the LogOn C# Web Service
 function LogOn(userName, password) {
@@ -577,12 +489,7 @@ function LogOn(userName, password) {
     dataType: 'json',
     success: function (msg) {
     if (msg.d.loggedIn) {
-      alert("logon success");
       let searchParams = new URLSearchParams(window.location.search)
-      console.log(searchParams);
-      //searchParams.has('sent')
-      //console.log(queryString);
-      console.log(searchParams.has('sID'));
       if (searchParams.has('sID') == false) {
         userInfo = msg.d;
         console.log(userInfo); // remove for production
@@ -592,10 +499,9 @@ function LogOn(userName, password) {
         renderAccountPage(userInfo);
         return true;
       } else {
-        alert('this is where we show the other page');
+        clickingLink = true;
         let searchParams = new URLSearchParams(window.location.search)
         let param = searchParams.get('sID');
-        console.log(param); // we will use this to actually show the survey
         userInfo = msg.d;
         console.log(userInfo); // remove for production
         clearLogOnForm();
@@ -648,8 +554,19 @@ function GetAccounts() {
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function (msg) {
-            console.log(msg.d);
-            employees = msg.d;
+          employees = msg.d;
+          //const sQuestions = GetSurveyQuestions();
+          console.log(surveyQuestions);
+          const questionContainer = document.querySelector('#questionContainer');
+
+          surveyQuestions.map(function (question) {
+            questionContainer.innerHTML += `<option data-qID=${question.qID} value="example1">${question.text}</option>`;
+          });
+
+          const employeeContainer = document.querySelector('#employeeContainer');
+          employees.map(function (employee) {
+            employeeContainer.innerHTML += `<option data-eID=${employee.eID}">${employee.email}</option>`;
+          });
             renderEmployeeAccounts(msg.d)
         },
         error: function (e) {
@@ -667,9 +584,8 @@ function GetSurveyQuestions() {
       contentType: 'application/json; charset=utf-8',
       dataType: 'json',
       success: function (msg) {
-        console.log(msg.d);
         surveyQuestions = msg.d;
-        console.log(surveyQuestions);
+        GetAccounts();
         return msg.d;
       },
       error: function (e) {
@@ -691,6 +607,7 @@ function GetUnrespondedSurveys(eID) {
         success: function (msg) {
             console.log(msg.d);
             unrespondedSurveys = msg.d;
+            renderUnrespondedSurveys();
             return msg.d;
         },
         error: function (e) {
@@ -712,6 +629,27 @@ function GetSurvey(sID) {
     success: function (msg) {
       console.log(msg.d);
       surveyToTake = msg.d;
+      document.querySelector('#responseTab').innerHTML =
+        `
+        <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
+            <div class="w3-card-4">
+            <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
+            <form id="my-survey-form" class="w3-container">
+                <div class="w3-padding-16">
+                <label class="w3-text-teal"><b>Question</b></label>
+                <p id="questionText">${surveyToTake[0].questionText}</p>
+                <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
+                <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
+                <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
+                </div>
+                <div class="w3-padding-16">
+                <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                </div> 
+            </form>
+            </div>
+        </div>
+        `
+      showPanel('responseTab');
       return msg.d;
     },
     error: function (e) {
@@ -722,8 +660,7 @@ function GetSurvey(sID) {
 //int qID, int privacy, int asking_eID, string date
 function CreateSurvey(qID, privacy, asking_eID, date, recipients) { // add recipient_eID in later
   var webMethod = 'AccountServices.asmx/CreateSurvey';
-  var parameters = `{"qID": ${encodeURI(qID)}, "privacy": ${encodeURI(privacy)}, "asking_eID": ${encodeURI(asking_eID)}, "date": "${encodeURI(date)}"}` //"recipient_eID": ${encodeURI(recipient_eID)}
-  console.log(parameters);
+  var parameters = `{"qID": ${encodeURI(qID)}, "privacy": ${encodeURI(privacy)}, "asking_eID": ${encodeURI(asking_eID)}, "date": "${encodeURI(date)}"}`
   $.ajax({
     type: 'POST',
     url: webMethod,
@@ -731,7 +668,6 @@ function CreateSurvey(qID, privacy, asking_eID, date, recipients) { // add recip
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     success: function (msg) {
-      alert('Survey successfully created');
       console.log(msg.d);
       surveyID = msg.d;
       return msg.d;
@@ -745,8 +681,7 @@ function CreateSurvey(qID, privacy, asking_eID, date, recipients) { // add recip
 
 function FillRecipientsTable(recipient_eID, surveyID) {
   var webMethod = 'AccountServices.asmx/FillRecipientsTable';
-  var parameters = `{"recipient_eID": ${encodeURI(recipient_eID)}, "surveyID": ${encodeURI(surveyID)}}` //"recipient_eID": ${encodeURI(recipient_eID)}
-  console.log(parameters);
+  var parameters = `{"recipient_eID": ${encodeURI(recipient_eID)}, "surveyID": ${encodeURI(surveyID)}}`;
   $.ajax({
     type: 'POST',
     url: webMethod,
@@ -767,7 +702,6 @@ function FillRecipientsTable(recipient_eID, surveyID) {
 function DeleteAccount(eID) {
     var webMethod = 'AccountServices.asmx/DeleteAccount';
     var parameters = `{ "eID" : ${encodeURI(eID)}}`;
-    console.log(parameters);
     $.ajax({
         type: 'POST',
         url: webMethod,
@@ -798,7 +732,6 @@ function EditAccount(eID, userName, password, firstName, lastName, email, positi
     "email" : "${encodeURI(email)}",
     "position" : "${encodeURI(position)}"
   }`;
-    console.log(parameters);
     $.ajax({
         type: 'POST',
         url: webMethod,
@@ -830,7 +763,6 @@ function CreateAccount(userName, password, firstName, lastName, email, position)
     "email" : "${encodeURI(email)}",
     "position" : "${encodeURI(position)}"
   }`;
-    console.log(parameters);
     $.ajax({
         type: 'POST',
         url: webMethod,
@@ -858,7 +790,6 @@ function SubmitSurveyResponse(eID, sID, answer, date) {
     "answer" : ${answer},
     "date" : "${encodeURI(date)}"
   }`;
-  console.log(parameters);
   $.ajax({
     type: 'POST',
     url: webMethod,
@@ -866,8 +797,9 @@ function SubmitSurveyResponse(eID, sID, answer, date) {
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     success: function (msg) {
-      alert('Survey Response submitted successfully');
       console.log(msg);
+      document.querySelector('#userSurvey').innerHTML = "";
+      renderAccountPage(userInfo);
     },
     error: function (e) {
       alert('Error submitting survey response');
