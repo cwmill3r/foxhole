@@ -180,7 +180,8 @@ function handleUserResponseSubmit(e) {
 
   let recipients = getSelectedEmployees();
   console.log(qID, privacy, asking_eID, datestring, recipients[0]);
-
+  let recipientEmailAddresses = getSelectedEmployeesEmails();
+  console.log(recipientEmailAddresses);
   showPanel('accountTab');
 
   CreateSurvey(qID, privacy, asking_eID, datestring); // saves to global
@@ -198,6 +199,10 @@ function handleUserResponseSubmit(e) {
     });
   });
   alert('recipient Table successfully filled');
+
+  sleep(10000).then(() => {
+    sendRecipientEmails(surveyID, recipientEmailAddresses);
+  });
 }
 
 // returns the recipients as array of ints to be consumed by the CreateSurvey() service
@@ -216,6 +221,29 @@ function getSelectedQuestion() {
     }
   }
   return selectedQuestion;
+}
+
+function getSelectedEmployeesEmails() {
+  let employeeContainer = document.getElementById('employeeContainer'), employee, i;
+  let recipientEmails = [];
+
+  for (i = 0; i < employeeContainer.length; i++) {
+    employee = employeeContainer.options[i];
+    if (employee.selected) {
+      console.log(employee);
+      let recipientEmail = employeeContainer.options[i].value + "," + " ";
+      console.log(recipientEmail);
+      recipientEmails.push(recipientEmail);
+    }
+  }
+
+  let recipientEmailString = "";
+
+  recipientEmails.map(function (email) {
+    recipientEmailString += email
+  })
+  console.log(recipientEmailString);
+  return recipientEmailString;
 }
 
 // returns the recipients as array of ints to be consumed by the CreateSurvey() service
@@ -368,17 +396,18 @@ const sleep = (milliseconds) => {
 }
 
 
-// SENDING AN EMAIL STUFF
-var templateParams = {
-  surveyURL: 'localhost:50406?12345',
-};
+function sendRecipientEmails(sID, recipientEmailString) {
+  // SENDING AN EMAIL STUFF
+  var templateParams = {
+    surveyURL: `http://localhost:50406?sID=${sID}`,
+    recipients: `chris.wayne.miller@gmail.com, parum.luceat@gmail.com`
+  };
 
-function sendTestEmail() {
   emailjs.send('default_service', 'surveylink', templateParams)
     .then(function (response) {
-      console.log('SUCCESS!', response.status, response.text);
+      console.log('SUCCESS Sending Emails!', response.status, response.text);
     }, function (error) {
-      console.log('FAILED...', error);
+      console.log('FAILED... Sending Emails', error);
     });
 }
 
