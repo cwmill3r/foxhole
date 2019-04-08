@@ -192,13 +192,111 @@
 <body>
 
   <!-- Content -->
-  <div id="main-content-wrapper" class="w3-light-blue w3-display-container" style="height:100vh;">
-      <div id="homeTab" class="w3-display-middle w3-center w3-light-blue">
-        <h2 class="w3-margin w3-text-indigo">Hi there!</h2>
-        <h2 class="w3-margin w3-text-indigo">Welcome to Foxhole</h2>
-        <img src="https://openclipart.org/download/279046/Cute-Fox-Without-Background.svg" />
-        <button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top" onclick="document.getElementById('loginModal').style.display='block'" style="width:auto;">Login</button>
-      </div>
+    <div id="main-content-wrapper" class="w3-light-blue w3-display-container" style="height:100vh;">
+        <div id="homeTab" class="w3-display-middle w3-center w3-light-blue">
+            <h2 class="w3-margin w3-text-indigo">Hi there!</h2>
+            <h2 class="w3-margin w3-text-indigo">Welcome to Foxhole</h2>
+            <img src="https://openclipart.org/download/279046/Cute-Fox-Without-Background.svg" />
+            <button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top" onclick="document.getElementById('loginModal').style.display='block'" style="width:auto;">Login</button>
+        </div>
+
+        <!-- Account Tab (what a logged in user sees)-->
+        <div id="accountTab" class="w3-container w3-display-middle-top" style="visibility: hidden;">
+            testing this worked
+            <!-- renderAccountPage output here -->
+            <!-- renderUsersSurveys output here -->
+        </div>
+
+        <!-- User Response Page -->
+        <div class="w3-container" id="responseTab">
+            <!-- Render user response tab here -->
+        </div>
+
+        <!--Manage Accounts Tab-->
+        <div id="manageTab" class="w3-container w3-display-middle-top" style="visibility: hidden;">
+            <!--renderAccountManagementPage output here -->
+        </div>
+
+        <!-- Create Question Tab -->
+        <div id="createQuestionTab">
+            <!-- createQuestionTab renders here -->
+        </div>
+
+        <!-- Create Account Tab-->
+          <div id="createAccountTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden; padding-top: 180px; padding-bottom: 50px;">
+            <div class="createAccountForm w3-card-4">
+              <div class="w3-container w3-teal">
+                <h2>Create Account</h2>
+              </div>
+              <form id="create-account-form" class="w3-container">
+                <div>
+                  <label class="w3-text-teal"><b>User Name</b></label>
+                  <input id="cq-userName" class="w3-input w3-border w3-light-grey" type="text">
+                </div>
+                <div>
+                  <label class="w3-text-teal"><b>Password</b></label>
+                  <input id="cq-password" class="w3-input w3-border w3-light-grey" type="text">
+                </div>
+                <div>
+                  <label class="w3-text-teal"><b>First Name</b></label>
+                  <input id="cq-firstName" class="w3-input w3-border w3-light-grey" type="text">
+                </div>
+                <div>
+                  <label class="w3-text-teal"><b>Last Name</b></label>
+                  <input id="cq-lastName" class="w3-input w3-border w3-light-grey" type="text">
+                </div>
+                <div>
+                  <label class="w3-text-teal"><b>Email</b></label>
+                  <input id="cq-email" class="w3-input w3-border w3-light-grey" type="text">
+                </div>
+                <div>
+                  <label class="w3-text-teal"><b>Position Title</b></label>
+                  <input id="cq-position" class="w3-input w3-border w3-light-grey" type="text">
+                </div>
+                <div>
+                  <input id="createAccountButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                </div>
+              </form>
+             </div>
+          </div>
+
+        <div id="editAccountTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden; padding-top: 180px; padding-bottom: 50px;">
+            <div class="editAccountForm w3-card-4">
+                <div class="w3-container w3-teal">
+                    <h2>Edit Account</h2>
+                </div>
+                <form id="editAccountForm" class="w3-container">
+                    <div>
+                        <label class="w3-text-teal"><b>User Name</b></label>
+                        <input id="eq-userName" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-teal"><b>Passsword</b></label>
+                        <input id="eq-password" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-teal"><b>First Name</b></label>
+                        <input id="eq-firstName" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-teal"><b>Last Name</b></label>
+                        <input id="eq-lastName" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-teal"><b>Email 2</b></label>
+                        <input id="eq-email" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-teal"><b>Position</b></label>
+                        <input id="eq-position" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <input id="editAccountButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                    </div>
+                    <input id="eq-eID" name="eID" type="hidden" value="">
+                </form>
+            </div>
+        </div>
 
     <!-- Account Tab (what a logged in user sees)-->
     <div id="accountTab" class="w3-container w3-display-middle-top" style="visibility: hidden;">
@@ -277,23 +375,7 @@
         </form>
       </div>
     </div>
-
-    <!-- User Response Page -->
-    <div class="w3-container" id="responseTab">
-      <!-- Render user response tab here -->
-    </div>
-
-    <!--Manage Accounts Tab-->
-    <div id="manageTab" class="w3-container w3-display-middle-top" style="visibility: hidden;">
-      <!--renderAccountManagementPage output here -->
-    </div>
-
-    <!-- Create Question Tab -->
-    <div id="createQuestionTab">
-        <!-- createQuestionTab renders here -->
-    </div>
-
-  </div>
+</div>
 
   <!--action="/action_page.php"-->
   <!-- Login Form -->

@@ -433,40 +433,152 @@ namespace foxhole
             sqlConnection.Close();
             return "failed";
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // These are old delete them for production>>>>>>>
-
-        //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
         [WebMethod(EnableSession = true)]
+        public int CreateAccount(string userName, string password, string firstName, string lastName, string email, string position)
+        {
+          int eID = -1;
+          string admin = "0";// defaults to non-admin user
+          string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+          //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
+          //does is tell mySql server to return the primary key of the last inserted row
+          string sqlSelect = $"insert into employee (eID, userName, password, firstName, lastName, admin, email, position) values(@userName, @password, @firstName, @lastName, @admin, @email, @position); SELECT LAST_INSERT_ID();";
+          Console.WriteLine(sqlSelect);
+          // add creatorId
+          MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+          MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+          //sqlCommand.Parameters.AddWithValue("@eId", eId);
+          sqlCommand.Parameters.AddWithValue("@userName", HttpUtility.UrlDecode(userName));
+          sqlCommand.Parameters.AddWithValue("@password", HttpUtility.UrlDecode(password));
+          sqlCommand.Parameters.AddWithValue("@firstName", HttpUtility.UrlDecode(firstName));
+          sqlCommand.Parameters.AddWithValue("@lastName", HttpUtility.UrlDecode(lastName));
+          sqlCommand.Parameters.AddWithValue("@email", HttpUtility.UrlDecode(email));
+          sqlCommand.Parameters.AddWithValue("@position", HttpUtility.UrlDecode(position));
+          sqlCommand.Parameters.AddWithValue("@admin", HttpUtility.UrlDecode(admin));
+
+
+          //this time, we're not using a data adapter to fill a data table.  We're just
+          //opening the connection, telling our command to "executescalar" which says basically
+          //execute the query and just hand me back the number the query returns (the ID, remember?).
+          //don't forget to close the connection!
+          sqlConnection.Open();
+          //we're using a try/catch so that if the query errors out we can handle it gracefully
+          //by closing the connection and moving on
+          try
+          {
+            eID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+            //here, you could use this accountID for additional queries regarding
+            //the requested account.  Really this is just an example to show you
+            //a query where you get the primary key of the inserted row back from
+            //the database!
+
+          }
+          catch (Exception e)
+          {
+            return eID;
+          }
+          sqlConnection.Close();
+          return eID;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void UpdateAccount(string eID, string userName, string password, string firstName, string lastName, string email, string position)
+        {
+          //WRAPPING THE WHOLE THING IN AN IF STATEMENT TO CHECK IF THEY ARE AN ADMIN!
+          if (Convert.ToInt32(Session["admin"]) == 1)
+          {
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //this is a simple update, with parameters to pass in values
+            string sqlSelect = "update employee set userName=@userNameValue, password=@passwordValue, firstName=@firstNameValue, lastName=@lastNameValue, " +
+            "email=@emailValue where eID=@eIDValue";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@userNameValue", HttpUtility.UrlDecode(userName));
+            sqlCommand.Parameters.AddWithValue("@passwordValue", HttpUtility.UrlDecode(password));
+            sqlCommand.Parameters.AddWithValue("@firstNameValue", HttpUtility.UrlDecode(firstName));
+            sqlCommand.Parameters.AddWithValue("@lastNameValue", HttpUtility.UrlDecode(lastName));
+            sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
+            sqlCommand.Parameters.AddWithValue("@positionValue", HttpUtility.UrlDecode(position));
+            sqlCommand.Parameters.AddWithValue("@eIDValue", HttpUtility.UrlDecode(eID));
+
+            sqlConnection.Open();
+            //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //by closing the connection and moving on
+            try
+            {
+              sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+          }
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void DeleteAccount(int eID)
+        {
+          if (Convert.ToInt32(Session["admin"]) == 1)
+          {
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //this is a simple update, with parameters to pass in values
+            string sqlSelect = "delete from employee where eID = @eIDValue;";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@eIDValue", HttpUtility.UrlDecode(Convert.ToString(eID)));
+
+            sqlConnection.Open();
+            try
+            {
+              sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+
+            }
+            sqlConnection.Close();
+          }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // These are old delete them for production>>>>>>>
+
+
+
+    //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
+    [WebMethod(EnableSession = true)]
         public void RequestAccount(string uid, string pass, string firstName, string lastName, string email)
         {
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
@@ -571,40 +683,6 @@ namespace foxhole
         }
 
         //EXAMPLE OF AN UPDATE QUERY WITH PARAMS PASSED IN
-        [WebMethod(EnableSession = true)]
-        public void UpdateAccount(string id, string uid, string pass, string firstName, string lastName, string email)
-        {
-            //WRAPPING THE WHOLE THING IN AN IF STATEMENT TO CHECK IF THEY ARE AN ADMIN!
-            if (Convert.ToInt32(Session["admin"]) == 1)
-            {
-                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-                //this is a simple update, with parameters to pass in values
-                string sqlSelect = "update accounts set userid=@uidValue, pass=@passValue, firstname=@fnameValue, lastname=@lnameValue, " +
-                    "email=@emailValue where id=@idValue";
-
-                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-                sqlCommand.Parameters.AddWithValue("@uidValue", HttpUtility.UrlDecode(uid));
-                sqlCommand.Parameters.AddWithValue("@passValue", HttpUtility.UrlDecode(pass));
-                sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(firstName));
-                sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(lastName));
-                sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
-                sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
-
-                sqlConnection.Open();
-                //we're using a try/catch so that if the query errors out we can handle it gracefully
-                //by closing the connection and moving on
-                try
-                {
-                    sqlCommand.ExecuteNonQuery();
-                }
-                catch (Exception e)
-                {
-                }
-                sqlConnection.Close();
-            }
-        }
         //EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
         [WebMethod(EnableSession = true)]
         public Account[] GetAccountRequests()
@@ -643,33 +721,7 @@ namespace foxhole
             }
         }
 
-        //EXAMPLE OF A DELETE QUERY
-        [WebMethod(EnableSession = true)]
-        public void DeleteAccount(string id)
-        {
-            if (Convert.ToInt32(Session["admin"]) == 1)
-            {
-                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-                //this is a simple update, with parameters to pass in values
-                string sqlSelect = "delete from accounts where id=@idValue";
-
-                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-                sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
-
-                sqlConnection.Open();
-                try
-                {
-                    sqlCommand.ExecuteNonQuery();
-                }
-                catch (Exception e)
-                {
-                }
-                sqlConnection.Close();
-            }
-        }
-
+    //EXAMPLE OF A DELETE QUER
         //EXAMPLE OF AN UPDATE QUERY
         [WebMethod(EnableSession = true)]
         public void ActivateAccount(string id)
@@ -884,92 +936,7 @@ namespace foxhole
             sqlConnection.Close();
             return true;
         }
-        //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
-        [WebMethod(EnableSession = true)]
-        public int CreateQuestion(int creatorId, string questionText, string sampleTrackName, string sampleArtistName, string sampleYouTubeLink, string songArtistName, string songTitle, string wrongAnswer1, string wrongAnswer2, string wrongAnswer3)
-        {
-            int questionId = -1;
-            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-            //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
-            //does is tell mySql server to return the primary key of the last inserted row.
-            string correctAnswerText = $"{songTitle} by {songArtistName}";
-            string sqlSelect = $"insert into questions (creatorId, questionText, videoId, correctAnswerText) values({creatorId}, @questionText, @videoId, @correctAnswerText); SELECT LAST_INSERT_ID();";
-            Console.WriteLine(sqlSelect);
-            // add creatorId
-            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-            //sqlCommand.Parameters.AddWithValue("@creatorId", creatorId);
-            sqlCommand.Parameters.AddWithValue("@questionText", HttpUtility.UrlDecode(questionText));
-            sqlCommand.Parameters.AddWithValue("@videoId", HttpUtility.UrlDecode(sampleYouTubeLink));
-            sqlCommand.Parameters.AddWithValue("@correctAnswerText", HttpUtility.UrlDecode(correctAnswerText));
-             
-            //this time, we're not using a data adapter to fill a data table.  We're just
-            //opening the connection, telling our command to "executescalar" which says basically
-            //execute the query and just hand me back the number the query returns (the ID, remember?).
-            //don't forget to close the connection!
-            sqlConnection.Open();
-            //we're using a try/catch so that if the query errors out we can handle it gracefully
-            //by closing the connection and moving on
-            try
-            {
-                questionId = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                //here, you could use this accountID for additional queries regarding
-                //the requested account.  Really this is just an example to show you
-                //a query where you get the primary key of the inserted row back from
-                //the database!
-            }
-            catch (Exception e)
-            {
-                return questionId; // will return -1
-            }
-
-            // add the wrong answers to their table
-            if (questionId != -1)
-            {
-                //string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-                //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
-                //does is tell mySql server to return the primary key of the last inserted row.
-                string sqlSelectWrongAnswers = $"START TRANSACTION;" +
-                    $"INSERT into wrong_answers (wrongAnswerText, questionId ) values(@wrongAnswer1, {questionId});" +
-                    $"INSERT into wrong_answers (wrongAnswerText, questionId ) values(@wrongAnswer2, {questionId});" +
-                    $"INSERT into wrong_answers (wrongAnswerText, questionId ) values(@wrongAnswer3, {questionId});" +
-                    $"COMMIT;);" +
-                    $"SELECT LAST_INSERT_ID();";
-                // add creatorId
-                //MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-                MySqlCommand sqlCommandWrongAnswers = new MySqlCommand(sqlSelectWrongAnswers, sqlConnection);
-
-                //sqlCommand.Parameters.AddWithValue("@creatorId", creatorId);
-                sqlCommandWrongAnswers.Parameters.AddWithValue("@wrongAnswer1", HttpUtility.UrlDecode(wrongAnswer1));
-                sqlCommandWrongAnswers.Parameters.AddWithValue("@wrongAnswer2", HttpUtility.UrlDecode(wrongAnswer2));
-                sqlCommandWrongAnswers.Parameters.AddWithValue("@wrongAnswer3", HttpUtility.UrlDecode(wrongAnswer3));
-
-                //this time, we're not using a data adapter to fill a data table.  We're just
-                //opening the connection, telling our command to "executescalar" which says basically
-                //execute the query and just hand me back the number the query returns (the ID, remember?).
-                //don't forget to close the connection!
-                //sqlConnection.Open();
-                //we're using a try/catch so that if the query errors out we can handle it gracefully
-                //by closing the connection and moving on
-                try
-                {
-                    questionId = Convert.ToInt32(sqlCommandWrongAnswers.ExecuteScalar());
-                    //here, you could use this accountID for additional queries regarding
-                    //the requested account.  Really this is just an example to show you
-                    //a query where you get the primary key of the inserted row back from
-                    //the database!
-                    sqlConnection.Close();
-                    return questionId;
-                }
-                catch (Exception e)
-                {
-                    sqlConnection.Close();
-                    return questionId; // will return -1
-                }
-            }
-            return questionId;
-        }
+        //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB
         [WebMethod(EnableSession = true)]
 
         public string EditQuestion(int questionId, string questionText, string sampleYouTubeLink, string correctAnswerText,  string wrongAnswer1, string wrongAnswer2, string wrongAnswer3)
