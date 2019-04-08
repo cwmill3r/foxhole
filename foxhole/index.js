@@ -401,21 +401,16 @@ function renderUserResponsePage(e) {
                 <div class="w3-padding-16">
                 <label class="w3-text-teal"><b>Question</b></label>
                 <p id="questionText">${surveyToTake[0].questionText}</p>
-                <input id="response" type="range" min="0" max="10" step="1" value="0" class="w3-input w3-border w3-light-grey">
+                <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
                 <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
                 <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
                 </div>
                 <div class="w3-padding-16">
-                <input id="createQuestionButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
-                </div>
+                <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                </div> 
             </form>
             </div>
         </div>
-        <script>
-		    function sliderChange(val) {
-     		    document.getElementById('responseOutput').innerHTML = val;
-		        }
-	    </script>
         `
     showPanel('responseTab');
 
