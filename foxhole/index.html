@@ -75,7 +75,7 @@
       margin: 8px 0;
       border: none;
       cursor: pointer;
-      width: 100%;
+      /*width: 100%;*/
     }
 
       button:hover {
@@ -201,8 +201,8 @@
         </div>
 
         <!-- Account Tab (what a logged in user sees)-->
-        <div id="accountTab" class="w3-container w3-display-middle-top" style="visibility: hidden;">
-            testing this worked
+        <div id="accountTab" class="w3-top" style="visibility: hidden;">
+            <!--testing this worked -->
             <!-- renderAccountPage output here -->
             <!-- renderUsersSurveys output here -->
         </div>
@@ -307,73 +307,119 @@
 
     <!-- Survey page -->
     <div class="w3-container" id="surveyTab" style="visibility: hidden;">
-      <style>
-        body {
-          font-family: Arial;
-        }
+        <style>
+            body {
+                font-family: Arial;
+            }
 
-        #question, #recipient {
-          width: 100%;
-          padding: 12px 20px;
-          margin: 8px 0;
-          display: block;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          box-sizing: border-box;
-        }
+            .userInput {
+                width: 100%;
+                padding: 12px 20px;
+                display: block;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
 
-        #anonymous {
-          padding: 12px 20px;
-          margin: 8px 0;
-          display: block;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          box-sizing: border-box;
-        }
+            input[type=submit]:hover {
+                background-color: #45a049;
+            }
 
-        input[type=submit] {
-          width: 100%;
-          background-color: #4CAF50;
-          color: white;
-          padding: 14px 20px;
-          margin: 8px 0;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
+            div.container {
+                border-radius: 5px;
+                background-color: #f2f2f2;
+                padding: 20px;
+            }
+        </style>
 
-        input[type=submit]:hover {
-          background-color: #45a049;
-        }
+        <div class="w3-padding-large">
+            <form id="surveyForm">
+                <div class="container">
 
-        div.container {
-          border-radius: 5px;
-          background-color: #f2f2f2;
-          padding: 20px;
-        }
-      </style>
+                    <h3 style="text-align: center;">Create A New Survey</h3>
 
-      <div class="w3-container">
-        <form id="surveyForm">
-          <div class="container">
+                    <label class="w3-margin-top" for="ques"><b>Question</b></label>
+                    <select class="userInput" name="ques" id="questionContainer">
+                        <!-- Survey Questions Go Here-->
+                    </select>
+                    <br>
+                    <label class="w3-margin-top" for="anon"><b>Anonymous? (Check If Yes)</b></label>
+                    <input class="w3-padding-large" style="display: block; box-sizing: border-box;" type="checkbox" name="anon" id="anonymous">
+                    <br>
+                    <label class="w3-margin-top" for="recipient"><b>Survey Recipient (Email)</b></label>
+                    <select class="userInput" multiple name="recipient" id="employeeContainer"></select>
+                    <div class="w3-center">
+                        <input type="button" class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" value="Create Survey" onclick="handleCreateSurveySubmit(this)">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--<style>
+      body {
+        font-family: Arial;
+      }
 
-            <h3 style="text-align: center;">Create A New Survey</h3>
+      #question, #recipient {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
 
-            <label for="ques"><b>Question</b></label>
-            <select name="ques" id="questionContainer">
-              <!- Survey Questions Go Here-->
-            </select>
+      #anonymous {
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
 
-            <label for="anon"><b>Anonymous? (Check If Yes)</b></label>
-            <input type="checkbox" name="anon" id="anonymous">
+      input[type=submit] {
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
 
-            <label for="recipient"><b>Survey Recipient (Email)</b></label>
-            <select multiple name="recipient" id="employeeContainer"></select>
+      input[type=submit]:hover {
+        background-color: #45a049;
+      }
 
-            <input type="button" value="Create Survey" onclick="handleCreateSurveySubmit(this)">
-          </div>
-        </form>
-      </div>
+      div.container {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+      }
+    </style>-->
+        <!--<div class="w3-container">
+      <form id="surveyForm">
+        <div class="container">
+
+          <h3 style="text-align: center;">Create A New Survey</h3>
+
+          <label for="ques"><b>Question</b></label>
+          <select name="ques" id="questionContainer">
+            ]
+          </select>
+
+          <label for="anon"><b>Anonymous? (Check If Yes)</b></label>
+          <input type="checkbox" name="anon" id="anonymous">
+
+          <label for="recipient"><b>Survey Recipient (Email)</b></label>
+          <select multiple name="recipient" id="employeeContainer"></select>
+
+          <input type="button" value="Create Survey" onclick="handleCreateSurveySubmit(this)">
+        </div>
+      </form>
+    </div>-->
     </div>
 </div>
 
@@ -393,7 +439,7 @@
         <label for="psw"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="psw" id="pswr" required>
 
-        <button type="submit">Login</button>
+        <button style="width:100%;" type="submit">Login</button>
         <label>
           <input type="checkbox" checked="checked" name="remember"> Remember me
         </label>

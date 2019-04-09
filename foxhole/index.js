@@ -75,22 +75,82 @@ function renderAccountManagementPage() {
 function renderAccountPage(userInfo) {
     // show account page
     document.querySelector('#accountTab').innerHTML =
-        `<div class="w3-container">
-        <img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
-        <h3 class="w3-text-teal">hello ${userInfo.userName}</h3>
-        <a style="text-decoration: underline; cursor: pointer;" class="w3-text-indigo" onClick="renderAccountManagementPage()" id="manageAccount-button">Manage Accounts</a>
-        <a style="text-decoration: underline; cursor: pointer;" class="w3-text-indigo" onClick="handleLogoffClick()" id="logoff-button">Logoff</a>
-        <div class="w3-right">
-          <button onclick="handleCreateSurveyClick(this)" id="createSurveyButton">create new survey</button>
-        </div>
-      </div>
-      <div id="surveyContainer"></div>
-      <div class="w3-container">
-        <div class="w3-section">
-          <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
-        </div>
-      </div>
-      </br>`
+        `
+      <div class="w3-display-middle-top">
+	  	<div class="w3-bar w3-indigo w3-card w3-left-align w3-large">
+	      <a id="home-tab-link" class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="handleLogoffClick()" id="logoff-button">
+	        Home
+	      </a>
+	      <a id="account-tab-link" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAccountManagementPage()" id="manageAccount-button">
+	        Manage Account
+	      </a>
+	    </div>
+	   <div class="w3-container">
+	       <div class="w3-center w3-padding-large">
+	       		<img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:120px">
+	     	 	<h1 class="w3-text-teal">hello ${userInfo.userName}</h1>
+	       		<button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" onclick="handleCreateSurveyClick(this)" id="createSurveyButton">Create Survey</button>
+	       </div> 
+	   </div>
+	   <div id="surveyContainer"></div>
+	   <div class="w3-container">
+	      <div class="w3-section">
+	         <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
+	      </div>
+	   </div>	
+	  </div>
+      <br>
+`
+
+        //  `
+ 
+    //<div class="w3-top w3-bar w3-indigo w3-card w3-left-align w3-large">
+    //    <a id="home-tab-link" class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="handleLogoffClick()" id="logoff-button">
+    //    Home
+    //    </a>
+    //    <a id="account-tab-link" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAccountManagementPage()" id="manageAccount-button">
+    //    Manage Account
+    //    </a>
+    //</div>
+    //  <div class="w3-container">
+	   //    <div class="w3-center">
+	   //    		<img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:120px">
+	   //  	 	<h1 class="w3-text-teal">hello ${userInfo.userName}</h1>
+	   //    		<button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" onclick="handleCreateSurveyClick(this)" id="createSurveyButton">Create Survey</button>
+	   //    </div> 
+	   //</div>
+	   //<div id="surveyContainer"></div>
+	   //<div class="w3-container">
+	   //   <div class="w3-section">
+	   //      <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
+	   //   </div>
+	   //</div>
+    //  </br>`
+
+        //`<div class="w3-top w3-bar w3-indigo w3-card w3-left-align w3-large">
+        //   <a id="home-tab-link" class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="handleLogoffClick()" id="logoff-button">
+        //   Home
+        //   </a>
+        //   <a id="account-tab-link" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAccountManagementPage()" id="manageAccount-button">
+        //   Manage Account
+        //   </a>
+        //</div>
+        //<div class="w3-container">
+        //   <div class="w3-center">
+        //      <img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:120px">
+        //      <h1 class="w3-text-teal">hello ${userInfo.userName}</h1>
+        //      <button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" onclick="handleCreateSurveyClick(this)" id="createSurveyButton">Create Survey</button>
+        //   </div>
+        //</div>
+        //<div id="surveyContainer"></div>
+        //<div class="w3-container">
+        //   <div class="w3-section">
+        //      <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
+        //   </div>
+        //</div>
+        //</br>`
+
+
     // render the surveys that an employee has not yet responded to
 
     GetUnrespondedSurveys(userInfo.eID);
