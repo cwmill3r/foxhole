@@ -149,6 +149,19 @@
         cursor: pointer;
       }
 
+      .close-survey {
+          color: #000;
+          font-size: 35px;
+          font-weight: bold;
+          float: right;
+      }
+
+      .close-survey:hover,
+      .close-survey:focus {
+          color: red;
+          cursor: pointer;
+      }
+
     /* Add Zoom Animation */
     .animate {
       -webkit-animation: animatezoom 0.6s;
@@ -223,9 +236,10 @@
         </div>
 
         <!-- Create Account Tab-->
-          <div id="createAccountTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden; padding-top: 180px; padding-bottom: 50px;">
+          <div id="createAccountTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden;">
             <div class="createAccountForm w3-card-4">
               <div class="w3-container w3-teal">
+                <span onclick="renderAccountPage(userInfo)" class="close-survey" style="color: white;" title="Close Modal">&times;</span>
                 <h2>Create Account</h2>
               </div>
               <form id="create-account-form" class="w3-container">
@@ -260,9 +274,10 @@
              </div>
           </div>
 
-        <div id="editAccountTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden; padding-top: 180px; padding-bottom: 50px;">
+        <div id="editAccountTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden; ">
             <div class="editAccountForm w3-card-4">
                 <div class="w3-container w3-teal">
+                    <span onclick="renderAccountPage(userInfo)" class="close-survey" style="color: white;" title="Close Modal">&times;</span>
                     <h2>Edit Account</h2>
                 </div>
                 <form id="editAccountForm" class="w3-container">
@@ -330,14 +345,14 @@
                 background-color: #f2f2f2;
                 padding: 20px;
             }
+            
         </style>
 
         <div class="w3-padding-large">
             <form id="surveyForm">
                 <div class="container">
-
-                    <h3 style="text-align: center;">Create A New Survey</h3>
-
+                    <span onclick="renderAccountPage(userInfo)" class="close-survey" title="Close Modal">&times;</span>
+                    <h3 style="text-align: center;">Create A New Survey</h3>                   
                     <label class="w3-margin-top" for="ques"><b>Question</b></label>
                     <select class="userInput" name="ques" id="questionContainer">
                         <!-- Survey Questions Go Here-->
