@@ -64,7 +64,7 @@ function renderAccountManagementPage() {
        </div>
        </div>
        <br>`
-       GetAccounts();
+       GetEmployees();
        showPanel('manageTab');
   } else {
       window.alert('Not an authorized user');
@@ -197,8 +197,8 @@ function renderEmployeeAccounts(employees) {
         document.querySelector('#userAccountList').innerHTML += `
       <li class="w3-bar">
         <span data-eID=${employee.eID} onclick="handleDeleteAccountClick(this)" class="accountDeleteButton w3-bar-item w3-button w3-xlarge w3-right">
-          <i data-eID=${employee.eID} class="accountDeleteButton fa fa-times" aria-hidden="true"></i>
-          <p data-eID=${employee.eID} class="accountDeleteButton w3-small">delete</p>
+          <i data-eID=${employee.eID} onclick="handleDeleteAccountClick(this)"  class="accountDeleteButton fa fa-times" aria-hidden="true"></i>
+          <p data-eID=${employee.eID} onclick="handleDeleteAccountClick(this)"  class="accountDeleteButton w3-small">delete</p>
         </span>
         <span data-eID=${employee.eID} onclick="handleEditAccountClick(this)" class="questionEditButton w3-bar-item w3-button w3-xlarge w3-right">
           <i data-eID=${employee.eID} onclick="handleEditAccountClick(this)" class="fa fa-pencil" aria-hidden="true"></i>
@@ -635,6 +635,25 @@ function GetAccounts() {
     });
 }
 
+function GetEmployees() {
+    var webMethod = 'AccountServices.asmx/GetEmployees';
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        //data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            employees = msg.d;
+            //const sQuestions = GetSurveyQuestions();
+            renderEmployeeAccounts(msg.d)
+        },
+        error: function (e) {
+            alert('Error getting questing from API');
+        }
+    });
+}
+
 function GetSurveyQuestions() {
     var webMethod = 'AccountServices.asmx/GetAllSurveyQuestions';
     $.ajax({
@@ -770,6 +789,7 @@ function DeleteAccount(eID) {
         dataType: 'json',
         success: function (msg) {
             console.log(msg.d);
+            GetEmployees();
             renderAccountManagementPage();
             //renderEmployeeAccounts(msg.d);
             return msg.d;
@@ -803,8 +823,9 @@ function EditAccount(eID, userName, password, firstName, lastName, email, positi
             //document.querySelector('#accountSettingsTab').innerHTML = "";
             document.querySelector('#userAccountList').innerHTML = "";
             // render the new page with the edited account
+            GetEmployees();
             renderAccountManagementPage();
-            renderEmployeeAccounts(msg.d);
+            //renderEmployeeAccounts(msg.d);
             showPanel('manageTab');
         },
         error: function (e) {
@@ -833,8 +854,9 @@ function CreateAccount(userName, password, firstName, lastName, email, position)
             alert('Congrats your account was approved...');
             //document.querySelector('#accountSettingsTab').innerHTML = "";
             showPanel('manageTab');
+            GetEmployees();
             renderAccountManagementPage();
-            renderEmployeeAccounts(msg.d);
+            //renderEmployeeAccounts(msg.d);
         },
         error: function (e) {
             alert('boo...');
