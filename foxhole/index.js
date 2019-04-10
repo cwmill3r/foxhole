@@ -60,14 +60,11 @@ function renderAccountManagementPage() {
        </div>
        <div class="w3-container">
        <div class="w3-section">
-         
-         <ul id="userAccountList" class="w3-ul w3-card-4 w3-white">
-            
-         </ul>
+         <ul id="userAccountList" class="w3-ul w3-card-4 w3-white"></ul>
        </div>
        </div>
        <br>`
-       GetAccounts();
+       GetEmployees();
        showPanel('manageTab');
   } else {
       window.alert('Not an authorized user');
@@ -77,9 +74,6 @@ function renderAccountManagementPage() {
 
 function renderAccountPage(userInfo) {
     // show account page
-    document.querySelector('#userName').innerHTML = "";
-    document.querySelector('#pswr').innerHTML = "";
-
     document.querySelector('#accountTab').innerHTML =
         `
       <div class="w3-display-middle-top">
@@ -172,39 +166,27 @@ function renderAccountPage(userInfo) {
 }
 
 function renderUnrespondedSurveys() {
-
-    if (unrespondedSurveys.length > 0) {
-
-        document.querySelector('#surveyContainer').innerHTML +=
-            `
-            <div class="w3-bar">
-                <h2 class="w3-bar-item w3-xlarge">Unresponded Surveys</h2>  
-            </div>
-    `;
-
-        unrespondedSurveys.map(function (survey) {
-            document.querySelector('#userSurveyList').innerHTML +=
-                `
-                  <li class="w3-bar">
-                    <span data-sID=${survey.sID} onClick="renderUserResponsePage(this)" class="takeSurveyButton w3-bar-item w3-button w3-xlarge w3-right">
-                        <i class="fa fa-reply"></i>
-                        <p class="takeSurveyButton w3-small">Take Survey</p>
-                    </span>
+  document.querySelector('#surveyContainer').innerHTML += `<h3>Unresponded Surveys</h3>`;
+  unrespondedSurveys.map(function (survey) {
+    document.querySelector('#userSurveyList').innerHTML +=
+      `<li class="w3-bar">
+        <span data-sID=${survey.sID} onClick="renderUserResponsePage(this)" class="takeSurveyButton w3-bar-item w3-button w3-xlarge w3-right">
+          <i class="fa fa-reply"></i>
+          <p class="takeSurveyButton w3-small">Take Survey</p>
+        </span>
    
-                    <div class="w3-bar-item">
-                        <span class="w3-large w3-text-grey"> ${survey.questionText} </span><br>
-                        <span class="w3-large w3-text-grey"> ${survey.date} </span><br>
-                    </div>
-                  </li>
-    `
-        });
-    }
+        <div class="w3-bar-item">
+          <span class="w3-large w3-text-grey"> ${survey.questionText} </span><br>
+          <span class="w3-large w3-text-grey"> ${survey.date} </span><br>
+        </div>
+      </li>`
+  });
 }  
 
 function renderEmployeeAccounts(employees) {
     document.querySelector('#manageTab').innerHTML += `
   <div class="w3-container">
-    <ul id="userAccountList" class="w3-ul w3-card-4 w3-padding-small"></ul>
+    <ul id="userAccountList" class="w3-ul w3-card-4"></ul>
   </div>
   `
     document.querySelector('#userAccountList').innerHTML = "";
@@ -214,11 +196,11 @@ function renderEmployeeAccounts(employees) {
     employees.map(function (employee, index) {
         document.querySelector('#userAccountList').innerHTML += `
       <li class="w3-bar">
-        <span data-eID=${employee.eID} onclick="handleDeleteAccountClick(this)" class="accountDeleteButton w3-bar-item w3-button w3-xlarge w3-right w3-padding-small">
-          <i data-eID=${employee.eID} class="accountDeleteButton fa fa-times" aria-hidden="true"></i>
-          <p data-eID=${employee.eID} class="accountDeleteButton w3-small">delete</p>
+        <span data-eID=${employee.eID} onclick="handleDeleteAccountClick(this)" class="accountDeleteButton w3-bar-item w3-button w3-xlarge w3-right">
+          <i data-eID=${employee.eID} onclick="handleDeleteAccountClick(this)"  class="accountDeleteButton fa fa-times" aria-hidden="true"></i>
+          <p data-eID=${employee.eID} onclick="handleDeleteAccountClick(this)"  class="accountDeleteButton w3-small">delete</p>
         </span>
-        <span data-eID=${employee.eID} onclick="handleEditAccountClick(this)" class="questionEditButton w3-bar-item w3-button w3-xlarge w3-right w3-padding-small">
+        <span data-eID=${employee.eID} onclick="handleEditAccountClick(this)" class="questionEditButton w3-bar-item w3-button w3-xlarge w3-right">
           <i data-eID=${employee.eID} onclick="handleEditAccountClick(this)" class="fa fa-pencil" aria-hidden="true"></i>
           <p data-eID=${employee.eID} onclick="handleEditAccountClick(this)" class="w3-small">edit</p>
         </span>
@@ -633,7 +615,6 @@ function GetAccounts() {
         dataType: 'json',
         success: function (msg) {
           employees = msg.d;
-          // need an if statement to limit the array from re-adding the same employees over and over on reload
           //const sQuestions = GetSurveyQuestions();
           console.log(surveyQuestions);
           const questionContainer = document.querySelector('#questionContainer');
@@ -646,6 +627,25 @@ function GetAccounts() {
           employees.map(function (employee) {
             employeeContainer.innerHTML += `<option data-eID=${employee.eID}">${employee.email}</option>`;
           });
+            renderEmployeeAccounts(msg.d)
+        },
+        error: function (e) {
+            alert('Error getting questing from API');
+        }
+    });
+}
+
+function GetEmployees() {
+    var webMethod = 'AccountServices.asmx/GetEmployees';
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        //data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            employees = msg.d;
+            //const sQuestions = GetSurveyQuestions();
             renderEmployeeAccounts(msg.d)
         },
         error: function (e) {
@@ -789,6 +789,7 @@ function DeleteAccount(eID) {
         dataType: 'json',
         success: function (msg) {
             console.log(msg.d);
+            GetEmployees();
             renderAccountManagementPage();
             //renderEmployeeAccounts(msg.d);
             return msg.d;
@@ -822,8 +823,9 @@ function EditAccount(eID, userName, password, firstName, lastName, email, positi
             //document.querySelector('#accountSettingsTab').innerHTML = "";
             document.querySelector('#userAccountList').innerHTML = "";
             // render the new page with the edited account
+            GetEmployees();
             renderAccountManagementPage();
-            renderEmployeeAccounts(msg.d);
+            //renderEmployeeAccounts(msg.d);
             showPanel('manageTab');
         },
         error: function (e) {
@@ -852,8 +854,9 @@ function CreateAccount(userName, password, firstName, lastName, email, position)
             alert('Congrats your account was approved...');
             //document.querySelector('#accountSettingsTab').innerHTML = "";
             showPanel('manageTab');
+            GetEmployees();
             renderAccountManagementPage();
-            renderEmployeeAccounts(msg.d);
+            //renderEmployeeAccounts(msg.d);
         },
         error: function (e) {
             alert('boo...');
