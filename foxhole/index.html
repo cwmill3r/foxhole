@@ -239,92 +239,119 @@
         </div>
 
         <!-- Create Account Tab-->
-          <div id="createAccountTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden;">
-            <div class="createAccountForm w3-card-4">
-              <div class="w3-container w3-teal">
-                <span onclick="renderAccountPage(userInfo)" class="close-survey" style="color: white;" title="Close Modal">&times;</span>
-                <h2>Create Account</h2>
-              </div>
-              <form id="create-account-form" class="w3-container">
-                <div>
-                  <label class="w3-text-teal"><b>User Name</b></label>
-                  <input id="cq-userName" class="w3-input w3-border w3-light-grey" type="text">
+        <div id="createAccountTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden;">
+            <div class="createAccountForm w3-card-4 w3-white">
+                <div class="w3-container w3-indigo">
+                    <span onclick="renderAccountPage(userInfo)" class="close-survey" style="color: white;" title="Close Modal">&times;</span>
+                    <h2>Create Account</h2>
                 </div>
-                <div>
-                  <label class="w3-text-teal"><b>Password</b></label>
-                  <input id="cq-password" class="w3-input w3-border w3-light-grey" type="text">
-                </div>
-                <div>
-                  <label class="w3-text-teal"><b>First Name</b></label>
-                  <input id="cq-firstName" class="w3-input w3-border w3-light-grey" type="text">
-                </div>
-                <div>
-                  <label class="w3-text-teal"><b>Last Name</b></label>
-                  <input id="cq-lastName" class="w3-input w3-border w3-light-grey" type="text">
-                </div>
-                <div>
-                  <label class="w3-text-teal"><b>Email</b></label>
-                  <input id="cq-email" class="w3-input w3-border w3-light-grey" type="text">
-                </div>
-                <div>
-                  <label class="w3-text-teal"><b>Position Title</b></label>
-                  <input id="cq-position" class="w3-input w3-border w3-light-grey" type="text">
-                </div>
-                <div>
-                  <input id="createAccountButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
-                </div>
-              </form>
-             </div>
-          </div>
+                <form id="create-account-form" class="w3-container w3-padding-large">
+                    <div>
+                        <label class="w3-text-indigo"><b>User Name</b></label>
+                        <input id="cq-userName" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-indigo"><b>Password</b></label>
+                        <input id="cq-password" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-indigo"><b>First Name</b></label>
+                        <input id="cq-firstName" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-indigo"><b>Last Name</b></label>
+                        <input id="cq-lastName" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-indigo"><b>Email</b></label>
+                        <input id="cq-email" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <label class="w3-text-indigo"><b>Position Title</b></label>
+                        <input id="cq-position" class="w3-input w3-border w3-light-grey" type="text">
+                    </div>
+                    <div>
+                        <input id="createAccountButton" type="submit" class="w3-btn w3-indigo" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <div id="editAccountTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden; ">
-            <div class="editAccountForm w3-card-4">
-                <div class="w3-container w3-teal">
+            <div class="editAccountForm w3-card-4 w3-white">
+                <div class="w3-container w3-indigo">
                     <span onclick="renderAccountPage(userInfo)" class="close-survey" style="color: white;" title="Close Modal">&times;</span>
                     <h2>Edit Account</h2>
                 </div>
-                <form id="editAccountForm" class="w3-container">
+                <form id="editAccountForm" class="w3-container w3-padding-large">
                     <div>
-                        <label class="w3-text-teal"><b>User Name</b></label>
+                        <label class="w3-text-indigo"><b>User Name</b></label>
                         <input id="eq-userName" class="w3-input w3-border w3-light-grey" type="text">
                     </div>
                     <div>
-                        <label class="w3-text-teal"><b>Passsword</b></label>
+                        <label class="w3-text-indigo"><b>Passsword</b></label>
                         <input id="eq-password" class="w3-input w3-border w3-light-grey" type="text">
                     </div>
                     <div>
-                        <label class="w3-text-teal"><b>First Name</b></label>
+                        <label class="w3-text-indigo"><b>First Name</b></label>
                         <input id="eq-firstName" class="w3-input w3-border w3-light-grey" type="text">
                     </div>
                     <div>
-                        <label class="w3-text-teal"><b>Last Name</b></label>
+                        <label class="w3-text-indigo"><b>Last Name</b></label>
                         <input id="eq-lastName" class="w3-input w3-border w3-light-grey" type="text">
                     </div>
                     <div>
-                        <label class="w3-text-teal"><b>Email 2</b></label>
+                        <label class="w3-text-indigo"><b>Email 2</b></label>
                         <input id="eq-email" class="w3-input w3-border w3-light-grey" type="text">
                     </div>
                     <div>
-                        <label class="w3-text-teal"><b>Position</b></label>
+                        <label class="w3-text-indigo"><b>Position</b></label>
                         <input id="eq-position" class="w3-input w3-border w3-light-grey" type="text">
                     </div>
                     <div>
-                        <input id="editAccountButton" type="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                        <input id="editAccountButton" type="submit" class="w3-btn w3-indigo" href="#" target="_blank" style="width: 95%; margin: 5px;">
                     </div>
                     <input id="eq-eID" name="eID" type="hidden" value="">
                 </form>
             </div>
         </div>
 
-    <!-- Account Tab (what a logged in user sees)-->
-    <div id="accountTab" class="w3-container w3-display-middle-top" style="visibility: hidden;">
-      testing this worked
-      <!-- renderAccountPage output here -->    
-      <!-- renderUsersSurveys output here -->
-    </div>
+        <!-- Account Tab (what a logged in user sees)-->
+        <div id="accountTab" class="w3-container w3-display-middle-top" style="visibility: hidden;">
+            testing this worked
+            <!-- renderAccountPage output here -->
+            <!-- renderUsersSurveys output here -->
+        </div>
 
-    <!-- Survey page -->
-    <div class="w3-container" id="surveyTab" style="visibility: hidden;">
+        <!-- Survey page -->
+        <div id="surveyTab" class="w3-container w3-display-middle w3-twothird" style="visibility: hidden;">
+            <div class="createAccountForm w3-card-4 w3-white">
+                <div class="w3-container w3-indigo">
+                    <span onclick="renderAccountPage(userInfo)" class="close-survey" style="color: white;" title="Close Modal">&times;</span>
+                    <h2>Create New Survey</h2>
+                </div>
+                <form id="surveyForm" class="w3-container w3-padding-large">
+                    <div>
+                        <label class="w3-text-indigo" for="ques"><b>Question</b></label>
+                        <select class="userInput w3-input w3-border w3-light-grey" name="ques" id="questionContainer">
+                            <!-- Survey Questions Go Here-->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="w3-text-indigo" for="anon"><b>Anonymous? (Check If Yes)</b></label>
+                        <input class="w3-input w3-border w3-light-grey w3-check" style="display: block; box-sizing: border-box;" type="checkbox" name="anon" id="anonymous">
+                    </div>
+                    <div>
+                        <label class="w3-text-indigo" for="recipient"><b>Survey Recipient (Email)</b></label>
+                        <select class="userInput w3-input w3-border ws-light-grey" multiple name="recipient" id="employeeContainer"></select>
+                    </div>
+                    <div>
+                        <input id="createAccountButton" type="button" class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top" value="Create Survey" style="width: 95%; margin: 5px;" onclick="handleCreateSurveySubmit(this)">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--<div class="w3-container" id="surveyTab" style="visibility: hidden;">
         <style>
             body {
                 font-family: Arial;
@@ -348,98 +375,32 @@
                 background-color: #f2f2f2;
                 padding: 20px;
             }
-            
+
         </style>
 
         <div class="w3-padding-large">
             <form id="surveyForm">
                 <div class="container">
                     <span onclick="renderAccountPage(userInfo)" class="close-survey" title="Close Modal">&times;</span>
-                    <h3 style="text-align: center;">Create A New Survey</h3>                   
+                    <h3 style="text-align: center;">Create A New Survey</h3>
                     <label class="w3-margin-top" for="ques"><b>Question</b></label>
-                    <select class="userInput" name="ques" id="questionContainer">
-                        <!-- Survey Questions Go Here-->
-                    </select>
-                    <br>
-                    <label class="w3-margin-top" for="anon"><b>Anonymous? (Check If Yes)</b></label>
-                    <input class="w3-padding-large" style="display: block; box-sizing: border-box;" type="checkbox" name="anon" id="anonymous">
-                    <br>
-                    <label class="w3-margin-top" for="recipient"><b>Survey Recipient (Email)</b></label>
-                    <select class="userInput" multiple name="recipient" id="employeeContainer"></select>
-                    <div class="w3-center">
-                        <input type="button" class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" value="Create Survey" onclick="handleCreateSurveySubmit(this)">
-                    </div>
+                    <select class="userInput" name="ques" id="questionContainer">-->
+        <!-- Survey Questions Go Here-->
+        <!--</select>
+                <br>
+                <label class="w3-margin-top" for="anon"><b>Anonymous? (Check If Yes)</b></label>
+                <input class="w3-padding-large" style="display: block; box-sizing: border-box;" type="checkbox" name="anon" id="anonymous">
+                <br>
+                <label class="w3-margin-top" for="recipient"><b>Survey Recipient (Email)</b></label>
+                <select class="userInput" multiple name="recipient" id="employeeContainer"></select>
+                <div class="w3-center">
+                    <input type="button" class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" value="Create Survey" onclick="handleCreateSurveySubmit(this)">
                 </div>
-            </form>
-        </div>
-        <!--<style>
-      body {
-        font-family: Arial;
-      }
-
-      #question, #recipient {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-      }
-
-      #anonymous {
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-      }
-
-      input[type=submit] {
-        width: 100%;
-        background-color: #4CAF50;
-        color: white;
-        padding: 14px 20px;
-        margin: 8px 0;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-
-      input[type=submit]:hover {
-        background-color: #45a049;
-      }
-
-      div.container {
-        border-radius: 5px;
-        background-color: #f2f2f2;
-        padding: 20px;
-      }
-    </style>-->
-        <!--<div class="w3-container">
-      <form id="surveyForm">
-        <div class="container">
-
-          <h3 style="text-align: center;">Create A New Survey</h3>
-
-          <label for="ques"><b>Question</b></label>
-          <select name="ques" id="questionContainer">
-            ]
-          </select>
-
-          <label for="anon"><b>Anonymous? (Check If Yes)</b></label>
-          <input type="checkbox" name="anon" id="anonymous">
-
-          <label for="recipient"><b>Survey Recipient (Email)</b></label>
-          <select multiple name="recipient" id="employeeContainer"></select>
-
-          <input type="button" value="Create Survey" onclick="handleCreateSurveySubmit(this)">
-        </div>
-      </form>
+            </div>
+        </form>
+    </div>
     </div>-->
     </div>
-</div>
 
   <!--action="/action_page.php"-->
   <!-- Login Form -->
