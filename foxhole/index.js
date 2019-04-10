@@ -49,21 +49,32 @@ function renderHomePage() {
 function renderAccountManagementPage() {
   if (userInfo.admin ==1) {
     document.querySelector('#manageTab').innerHTML =
-      `<div class="w3-container  w3-display-middle-top">
-        <h3 class="w3-text-teal">Accounts currently registered with Foxhole</h3>
-        <div class="w3-right">
-          <button onclick="renderAccountPage(userInfo)" id="returnButton">Return to your Account</button>
+      
+       // <div class="w3-container  w3-display-middle-top">
+       // <h3 class="w3-text-teal">Accounts currently registered with Foxhole</h3>
+       // <div class="w3-right">
+       //   <button onclick="renderAccountPage(userInfo)" id="returnButton">Return to your Account</button>
+       // </div>
+       // <div class="w3-left">
+       //     <button onclick="handleCreateAccountClick(this)" id="createAccountButton">Create new Account</button>
+       // </div>
+       //</div>
+
+       `
+        <div class="w3-bar w3-indigo w3-card w3-left-align w3-large">
+                <a class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="renderAccountPage(userInfo)" id="-button">
+                Home
+                </a>
+                <a id="account-tab-link" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="handleCreateAccountClick(this)" id="manageAccount-button">
+                Create Account
+                </a>
         </div>
-        <div class="w3-left">
-            <button onclick="handleCreateAccountClick(this)" id="createAccountButton">Create new Account</button>
+        <div class="w3-container">
+          <div class="w3-section">
+             <ul id="userAccountList" class="w3-ul w3-card-4 w3-white"></ul>
+          </div>
         </div>
-       </div>
-       <div class="w3-container">
-       <div class="w3-section">
-         <ul id="userAccountList" class="w3-ul w3-card-4 w3-white"></ul>
-       </div>
-       </div>
-       <br>`
+        <br>`
        GetEmployees();
        showPanel('manageTab');
   } else {
@@ -79,16 +90,16 @@ function renderAccountPage(userInfo) {
       <div class="w3-display-middle-top">
 	  	<div class="w3-bar w3-indigo w3-card w3-left-align w3-large">
 	      <a id="home-tab-link" class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="handleLogoffClick()" id="logoff-button">
-	        Home
+	        Logout
 	      </a>
 	      <a id="account-tab-link" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAccountManagementPage()" id="manageAccount-button">
 	        Manage Account
 	      </a>
 	    </div>
 	   <div class="w3-container">
-	       <div class="w3-center w3-padding-large">
+	       <div class="w3-center w3-padding-large" style="margin-top: 20px;">
 	       		<img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:120px">
-	     	 	<h1 class="w3-text-teal">hello ${userInfo.userName}</h1>
+	     	 	<h1 class="w3-text-teal">Hello ${userInfo.firstName}!</h1>
 	       		<button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" onclick="handleCreateSurveyClick(this)" id="createSurveyButton">Create Survey</button>
 	       </div> 
 	   </div>
@@ -166,7 +177,7 @@ function renderAccountPage(userInfo) {
 }
 
 function renderUnrespondedSurveys() {
-  document.querySelector('#surveyContainer').innerHTML += `<h3>Unresponded Surveys</h3>`;
+
   unrespondedSurveys.map(function (survey) {
     document.querySelector('#userSurveyList').innerHTML +=
       `<li class="w3-bar">
@@ -712,17 +723,17 @@ function GetSurvey(sID) {
         `
         <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
             <div class="w3-card-4">
-            <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
-            <form id="my-survey-form" class="w3-container">
+            <div class="w3-container w3-indigo"><h2>Survey Response</h2></div>
+            <form id="my-survey-form" class="w3-container w3-white">
                 <div class="w3-padding-16">
-                <label class="w3-text-teal"><b>Question</b></label>
+                <label class="w3-text-indigo"><b>Question</b></label>
                 <p id="questionText">${surveyToTake[0].questionText}</p>
                 <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
                 <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
                 <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
                 </div>
                 <div class="w3-padding-16">
-                <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="Submit" class="w3-btn w3-indigo" href="#" target="_blank" style="width: 95%; margin: 5px;">
                 </div> 
             </form>
             </div>
