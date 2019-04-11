@@ -32,7 +32,7 @@
 
     #anonymous {
       padding: 12px 20px;
-      margin: 8px 0;
+      /*margin: 8px 0;*/
       display: block;
       border: 1px solid #ccc;
       border-radius: 4px;
@@ -270,8 +270,8 @@
                         <label class="w3-text-indigo"><b>Position Title</b></label>
                         <input id="cq-position" class="w3-input w3-border w3-light-grey" type="text">
                     </div>
-                    <div>
-                        <input id="createAccountButton" type="submit" class="w3-btn w3-indigo" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                    <div style="text-align: center;">
+                        <input id="createAccountButton" type="submit" class="w3-btn w3-indigo w3-large" href="#" target="_blank" style="width: 40%; margin: 5px;">
                     </div>
                 </form>
             </div>
@@ -308,8 +308,8 @@
                         <label class="w3-text-indigo"><b>Position</b></label>
                         <input id="eq-position" class="w3-input w3-border w3-light-grey" type="text">
                     </div>
-                    <div>
-                        <input id="editAccountButton" type="submit" class="w3-btn w3-indigo" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                    <div style="text-align: center;">
+                        <input id="editAccountButton" type="submit" class="w3-btn w3-indigo w3-large" href="#" target="_blank" style="width: 40%; margin: 5px;">
                     </div>
                     <input id="eq-eID" name="eID" type="hidden" value="">
                 </form>
@@ -331,22 +331,22 @@
                     <h2>Create New Survey</h2>
                 </div>
                 <form id="surveyForm" class="w3-container w3-padding-large">
-                    <div>
+                    <div class="w3-margin-top">
                         <label class="w3-text-indigo" for="ques"><b>Question</b></label>
                         <select class="userInput w3-input w3-border w3-light-grey" name="ques" id="questionContainer">
                             <!-- Survey Questions Go Here-->
                         </select>
                     </div>
-                    <div>
+                    <div class="w3-margin-top">
                         <label class="w3-text-indigo" for="anon"><b>Anonymous? (Check If Yes)</b></label>
                         <input class="w3-input w3-border w3-light-grey w3-check" style="display: block; box-sizing: border-box;" type="checkbox" name="anon" id="anonymous">
                     </div>
-                    <div>
+                    <div class="w3-margin-top">
                         <label class="w3-text-indigo" for="recipient"><b>Survey Recipient (Email)</b></label>
                         <select class="userInput w3-input w3-border ws-light-grey" multiple name="recipient" id="employeeContainer"></select>
                     </div>
-                    <div>
-                        <input id="createAccountButton" type="button" class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top" value="Create Survey" style="width: 95%; margin: 5px;" onclick="handleCreateSurveySubmit(this)">
+                    <div class="w3-margin" style="text-align: center;">
+                        <input id="createAccount" type="button" class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top" value="Create Survey" style="width: 40%; margin: 5px;" onclick="handleCreateSurveySubmit(this)">
                     </div>
                 </form>
             </div>
@@ -418,7 +418,7 @@
         <label for="psw"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="psw" id="pswr" required>
 
-        <button style="width:100%;" type="submit">Login</button>
+        <button style="width:100%;" class="w3-large" type="submit">Submit</button>
         <label>
           <input type="checkbox" checked="checked" name="remember"> Remember me
         </label>

@@ -98,7 +98,7 @@ function renderAccountPage(userInfo) {
 	    </div>
 	   <div class="w3-container">
 	       <div class="w3-center w3-padding-large" style="margin-top: 20px;">
-	       		<img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:120px">
+	       		<img src="assets/images/img_avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:120px">
 	     	 	<h1 class="w3-text-teal">Hello ${userInfo.firstName}!</h1>
 	       		<button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" onclick="handleCreateSurveyClick(this)" id="createSurveyButton">Create Survey</button>
 	       </div> 
@@ -191,7 +191,9 @@ function renderUnrespondedSurveys() {
           <span class="w3-large w3-text-grey"> ${survey.date} </span><br>
         </div>
       </li>`
-  });
+    });
+
+   
 }  
 
 function renderEmployeeAccounts(employees) {
@@ -723,7 +725,10 @@ function GetSurvey(sID) {
         `
         <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
             <div class="w3-card-4">
-            <div class="w3-container w3-indigo"><h2>Survey Response</h2></div>
+            <div class="w3-container w3-indigo">
+                <span onclick="renderAccountPage(userInfo)" class="close-survey" style="color: white; font-size: 35px; font-weight: bold; float: right;" title="Close Modal">&times;</span>
+                <h2>Survey Response</h2>
+            </div>
             <form id="my-survey-form" class="w3-container w3-white">
                 <div class="w3-padding-16">
                 <label class="w3-text-indigo"><b>Question</b></label>
@@ -732,8 +737,8 @@ function GetSurvey(sID) {
                 <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
                 <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
                 </div>
-                <div class="w3-padding-16">
-                <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="Submit" class="w3-btn w3-indigo" href="#" target="_blank" style="width: 95%; margin: 5px;">
+                <div class="w3-padding-16" style="text-align: center;">
+                <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="Submit" class="w3-btn w3-indigo w3-large" href="#" target="_blank" style="width: 40%; margin: 5px;">
                 </div> 
             </form>
             </div>
