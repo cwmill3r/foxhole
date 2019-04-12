@@ -16,7 +16,8 @@ const contentPanels = [
   'responseTab',
   'createQuestionTab',
   'editAccountTab',
-  'createAccountTab'
+  'createAccountTab',
+  'analyticsTab'
 ];
  
 // login form submit handler
@@ -46,8 +47,22 @@ function renderHomePage() {
       <button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top" onclick="document.getElementById('loginModal').style.display='block'" style="width:auto;">Login</button>`;
 }
 
+function renderAnalyticsPage() {
+    if (userInfo.admin == 1) {
+        document.querySelector('#analyticsTab').innerHTML =
+        `
+         
+        `
+    }
+    else {
+        window.alert('Not an authorized user');
+    }
+}
+
+
+
 function renderAccountManagementPage() {
-  if (userInfo.admin ==1) {
+  if (userInfo.admin == 1) {
     document.querySelector('#manageTab').innerHTML =
       
        // <div class="w3-container  w3-display-middle-top">
@@ -89,11 +104,14 @@ function renderAccountPage(userInfo) {
         `
       <div class="w3-display-middle-top">
 	  	<div class="w3-bar w3-indigo w3-card w3-left-align w3-large">
-	      <a id="home-tab-link" class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="handleLogoffClick()" id="logoff-button">
+	      <a class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="handleLogoffClick()" id="logoff-button">
 	        Logout
 	      </a>
-	      <a id="account-tab-link" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAccountManagementPage()" id="manageAccount-button">
+	      <a class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAccountManagementPage()" id="manageAccount-button">
 	        Manage Account
+	      </a>
+          <a class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAnalyticsPage()" id="analytics-button">
+	        Analytics
 	      </a>
 	    </div>
 	   <div class="w3-container">
@@ -103,12 +121,16 @@ function renderAccountPage(userInfo) {
 	       		<button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" onclick="handleCreateSurveyClick(this)" id="createSurveyButton">Create Survey</button>
 	       </div> 
 	   </div>
-	   <div id="surveyContainer"></div>
-	   <div class="w3-container">
-	      <div class="w3-section">
-	         <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
-	      </div>
-	   </div>	
+	   <div class="w3-display-container">
+	       <div id="unrespSurvSection" class="w3-container" style="width: 85%; margin:auto">
+              <div id="surveyContainer" class="w3-lightgrey w3-padding-large w3-large" style="margin-top: 10px;">
+                  <header>Unresponded Surveys</header>
+              </div>
+	          <div class="">
+	             <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
+	          </div>
+	       </div>	
+        </div>
 	  </div>
       <br>
 `
@@ -168,9 +190,9 @@ function renderAccountPage(userInfo) {
 
     // hides admin features from regular user
     if (userInfo.admin != 1) {
-        document.getElementById('manageAccount-button')    // show pleb account
-            .style.display = 'none';
+        document.getElementById('manageAccount-button').style.display = 'none';
         document.getElementById('createSurveyButton').style.display = 'none';
+        document.getElementByID('analytics-button').style.display = 'none';
     }
     // show the rendered page
     showPanel('accountTab');
