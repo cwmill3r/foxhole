@@ -26,7 +26,6 @@ function handleLoginFormSubmit(e) {
   const pass = document.querySelector('#pswr').value;
   LogOn(id, pass);
   console.log(userInfo);
-  //
 }
 
 function clearLogOnForm() {
@@ -177,8 +176,11 @@ function renderAccountPage(userInfo) {
 }
 
 function renderUnrespondedSurveys() {
-
   unrespondedSurveys.map(function (survey) {
+    let date = survey.date;
+    var formattedDate = date.substring(0, date.length - 11);
+    console.log(formattedDate);
+    //let formattedDate;
     document.querySelector('#userSurveyList').innerHTML +=
       `<li class="w3-bar">
         <span data-sID=${survey.sID} onClick="renderUserResponsePage(this)" class="takeSurveyButton w3-bar-item w3-button w3-xlarge w3-right">
@@ -188,12 +190,10 @@ function renderUnrespondedSurveys() {
    
         <div class="w3-bar-item">
           <span class="w3-large w3-text-grey"> ${survey.questionText} </span><br>
-          <span class="w3-large w3-text-grey"> ${survey.date} </span><br>
+          <span class="w3-large w3-text-grey"> ${formattedDate} </span><br>
         </div>
       </li>`
     });
-
-   
 }  
 
 function renderEmployeeAccounts(employees) {
