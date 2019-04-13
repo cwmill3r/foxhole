@@ -1,208 +1,339 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-  <script type="text/javascript" src="https://cdn.emailjs.com/sdk/2.3.2/email.min.js"></script>
-  <script type="text/javascript">
-    (function () {
-      emailjs.init("user_jGmR3nbugsrWtMwB5ZjKE");
-    })();
-  </script>
-  <style>
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-    }
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/2.3.2/email.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            emailjs.init("user_jGmR3nbugsrWtMwB5ZjKE");
+        })();
+    </script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
 
-    #question, #recipient {
-      width: 100%;
-      padding: 12px 20px;
-      margin: 8px 0;
-      display: block;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
+        #question, #recipient {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
 
-    #anonymous {
-      padding: 12px 20px;
-      /*margin: 8px 0;*/
-      display: block;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
+        #anonymous {
+            padding: 12px 20px;
+            /*margin: 8px 0;*/
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
 
-    input[type=submit] {
-      width: 100%;
-      background-color: #4CAF50;
-      color: white;
-      padding: 14px 20px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+        input[type=submit] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-      input[type=submit]:hover {
-        background-color: #45a049;
-      }
+            input[type=submit]:hover {
+                background-color: #45a049;
+            }
 
-    div.container {
-      border-radius: 5px;
-      background-color: #f2f2f2;
-      padding: 20px;
-    }
+        div.container {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
 
-    /* Full-width input fields */
-    input[type=text], input[type=password] {
-      width: 100%;
-      padding: 12px 20px;
-      margin: 8px 0;
-      display: inline-block;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
+        /* Full-width input fields */
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
 
-    /* Set a style for all buttons */
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 14px 20px;
-      margin: 8px 0;
-      border: none;
-      cursor: pointer;
-      /*width: 100%;*/
-    }
+        /* Set a style for all buttons */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            /*width: 100%;*/
+        }
 
-      button:hover {
-        opacity: 0.8;
-      }
+            button:hover {
+                opacity: 0.8;
+            }
 
-    /* Extra styles for the cancel button */
-    .cancelbtn {
-      width: auto;
-      padding: 10px 18px;
-      background-color: #f44336;
-    }
+        /* Extra styles for the cancel button */
+        .cancelbtn {
+            width: auto;
+            padding: 10px 18px;
+            background-color: #f44336;
+        }
 
-    /* Center the image and position the close button */
-    .imgcontainer {
-      text-align: center;
-      margin: 24px 0 12px 0;
-      position: relative;
-    }
+        /* Center the image and position the close button */
+        .imgcontainer {
+            text-align: center;
+            margin: 24px 0 12px 0;
+            position: relative;
+        }
 
-    img.avatar {
-      width: 30%;
-      border-radius: 50%;
-    }
+        img.avatar {
+            width: 30%;
+            border-radius: 50%;
+        }
 
-    .container {
-      padding: 16px;
-    }
+        .container {
+            padding: 16px;
+        }
 
-    span.psw {
-      float: right;
-      padding-top: 16px;
-    }
+        span.psw {
+            float: right;
+            padding-top: 16px;
+        }
 
-    /* The Modal (background) */
-    .modal {
-      display: none; /* Hidden by default */
-      position: fixed; /* Stay in place */
-      z-index: 1; /* Sit on top */
-      left: 0;
-      top: 0;
-      width: 100%; /* Full width */
-      height: 100%; /* Full height */
-      overflow: auto; /* Enable scroll if needed */
-      background-color: rgb(0,0,0); /* Fallback color */
-      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-      padding-top: 60px;
-    }
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
 
-    /* Modal Content/Box */
-    .modal-content {
-      background-color: #fefefe;
-      margin: auto; /* 5% from the top, 15% from the bottom and centered */
-      border: 1px solid #888;
-      width: 40%; /* Could be more or less, depending on screen size */
-    }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto; /* 5% from the top, 15% from the bottom and centered */
+            border: 1px solid #888;
+            width: 40%; /* Could be more or less, depending on screen size */
+        }
 
-    /* The Close Button (x) */
-    .close {
-      position: absolute;
-      right: 25px;
-      top: 0;
-      color: #000;
-      font-size: 35px;
-      font-weight: bold;
-    }
+        /* The Close Button (x) */
+        .close {
+            position: absolute;
+            right: 25px;
+            top: 0;
+            color: #000;
+            font-size: 35px;
+            font-weight: bold;
+        }
 
-      .close:hover,
-      .close:focus {
-        color: red;
-        cursor: pointer;
-      }
+            .close:hover,
+            .close:focus {
+                color: red;
+                cursor: pointer;
+            }
 
-      .close-survey {
-          color: #000;
-          font-size: 35px;
-          font-weight: bold;
-          float: right;
-      }
+        .close-survey {
+            color: #000;
+            font-size: 35px;
+            font-weight: bold;
+            float: right;
+        }
 
-      .close-survey:hover,
-      .close-survey:focus {
-          color: red;
-          cursor: pointer;
-      }
+            .close-survey:hover,
+            .close-survey:focus {
+                color: red;
+                cursor: pointer;
+            }
 
-    /* Add Zoom Animation */
-    .animate {
-      -webkit-animation: animatezoom 0.6s;
-      animation: animatezoom 0.6s
-    }
+        /* Add Zoom Animation */
+        .animate {
+            -webkit-animation: animatezoom 0.6s;
+            animation: animatezoom 0.6s
+        }
 
-    @-webkit-keyframes animatezoom {
-      from {
-        -webkit-transform: scale(0)
-      }
+        @-webkit-keyframes animatezoom {
+            from {
+                -webkit-transform: scale(0)
+            }
 
-      to {
-        -webkit-transform: scale(1)
-      }
-    }
+            to {
+                -webkit-transform: scale(1)
+            }
+        }
 
-    @keyframes animatezoom {
-      from {
-        transform: scale(0)
-      }
+        @keyframes animatezoom {
+            from {
+                transform: scale(0)
+            }
 
-      to {
-        transform: scale(1)
-      }
-    }
+            to {
+                transform: scale(1)
+            }
+        }
 
-    /* Change styles for span and cancel button on extra small screens */
-    @media screen and (max-width: 300px) {
-      span.psw {
-        display: block;
-        float: none;
-      }
+        /* Change styles for span and cancel button on extra small screens */
+        @media screen and (max-width: 300px) {
+            span.psw {
+                display: block;
+                float: none;
+            }
 
-      .cancelbtn {
-        width: 100%;
-      }
-    }
-  </style>
+            .cancelbtn {
+                width: 100%;
+            }
+        }
+
+
+        /* Start of Analytics page Styling */
+
+
+        @media only screen and (max-width: 800px) {
+        }
+        /*Bar Chart*/
+        .halfGraphDiv {
+            text-align: center;
+            width: 45%;
+            border: 2px solid navy;
+            float: left;
+            clear: left;
+            margin: 10px;
+        }
+
+        .fullGraphDiv {
+            text-align: center;
+            bottom: 0px;
+            width: 50%;
+            padding: 20px;
+            border: 2px solid navy;
+            float: left;
+            margin: 10px;
+        }
+
+        .first2Container {
+        }
+
+        /*Line Chart*/
+        canvas {
+            border: 1px solid navy;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+
+
+        @media only screen and (min-width: 801px) {
+        }
+        /*Graph Container Styling*/
+        .halfGraphDiv {
+            text-align: center;
+            width: 35%;
+            border: 2px solid navy;
+            float: left;
+            clear: left;
+            margin: 10px;
+        }
+
+        .fullGraphDiv {
+            display: inline-block;
+            text-align: center;
+            bottom: 0px;
+            width: 50%;
+            padding: 20px;
+            border: 2px solid navy;
+            float: left;
+            margin: 10px;
+        }
+
+        .first2Container {
+        }
+
+        /*Line Chart*/
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+
+        @keyframes chartjs-render-animation {
+            from {
+                opacity: .99
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .chartjs-render-monitor {
+            animation: chartjs-render-animation 1ms
+        }
+
+        .chartjs-size-monitor, .chartjs-size-monitor-expand, .chartjs-size-monitor-shrink {
+            position: absolute;
+            direction: ltr;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+            visibility: hidden;
+            z-index: -1
+        }
+
+            .chartjs-size-monitor-expand > div {
+                position: absolute;
+                width: 1000000px;
+                height: 1000000px;
+                left: 0;
+                top: 0
+            }
+
+            .chartjs-size-monitor-shrink > div {
+                position: absolute;
+                width: 200%;
+                height: 200%;
+                left: 0;
+                top: 0
+            }
+
+        /* End of Analytics Page styling */
+    </style>
+
+    <!-- Loading scripts for Anlytics Page online resources -->
+    <!-- Bar Chart online resource -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+
+    <!-- Pie Chart Online resource -->
+    <script src="https://www.chartjs.org/dist/2.8.0/Chart.min.js"></script>
+    <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+
+
+    <!-- Line Chart online resource -->
+    <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+    <script src="https://www.chartjs.org/dist/2.8.0/Chart.min.js"></script>
+
 </head>
 
 <body class="w3-light-blue">
@@ -351,40 +482,71 @@
                 </form>
             </div>
         </div>
+        <!-- Analytics Page Tab -->
+        <div id="analyticsTab" style="visibility: hidden;">
+            <div id="analyticsPage" >
+
+
+                <div class="first2Container">
+                    <!-- Bar Graph HTML -->
+                    <div class="halfGraphDiv">
+                        <h2>
+                            Chart 1 (Chart.js)
+                        </h2>
+                        <canvas id="chartjs-2" class="chartjs" width="745" height="372" style="display: block; height: 298px; width: 596px;"></canvas>
+
+                        <!-- Pie Graph HTML -->
+                        <h2>Chart 2 (Pie Chart)</h2>
+                        <div id="canvas-holder" style="width:100%">
+                            <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                            <canvas id="chart-area" style="display: block; height: 304px; width: 608px;" width="760" height="380" class="chartjs-render-monitor"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Line Chart HTML -->
+                <div class='fullGraphDiv'>
+                    <h2>Chart 3 (Line Chart)</h2>
+                    <canvas id="line-chart" width="800" height="450"></canvas>
+                </div>
+            </div>
+        </div>
+
         <!--<div class="w3-container" id="surveyTab" style="visibility: hidden;">
-        <style>
-            body {
-                font-family: Arial;
-            }
+    <style>
+        body {
+            font-family: Arial;
+        }
 
-            .userInput {
-                width: 100%;
-                padding: 12px 20px;
-                display: block;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                box-sizing: border-box;
-            }
+        .userInput {
+            width: 100%;
+            padding: 12px 20px;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
 
-            input[type=submit]:hover {
-                background-color: #45a049;
-            }
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
 
-            div.container {
-                border-radius: 5px;
-                background-color: #f2f2f2;
-                padding: 20px;
-            }
+        div.container {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
 
-        </style>
+    </style>
 
-        <div class="w3-padding-large">
-            <form id="surveyForm">
-                <div class="container">
-                    <span onclick="renderAccountPage(userInfo)" class="close-survey" title="Close Modal">&times;</span>
-                    <h3 style="text-align: center;">Create A New Survey</h3>
-                    <label class="w3-margin-top" for="ques"><b>Question</b></label>
-                    <select class="userInput" name="ques" id="questionContainer">-->
+    <div class="w3-padding-large">
+        <form id="surveyForm">
+            <div class="container">
+                <span onclick="renderAccountPage(userInfo)" class="close-survey" title="Close Modal">&times;</span>
+                <h3 style="text-align: center;">Create A New Survey</h3>
+                <label class="w3-margin-top" for="ques"><b>Question</b></label>
+                <select class="userInput" name="ques" id="questionContainer">-->
         <!-- Survey Questions Go Here-->
         <!--</select>
                 <br>
@@ -429,7 +591,8 @@
         <span class="psw">Forgot <a href="#">password?</a></span>
       </div>
     </form>
-  </div>
+  </div>  
+
   <script>
     // Get the modal
     var modal = document.getElementById('loginModal');
