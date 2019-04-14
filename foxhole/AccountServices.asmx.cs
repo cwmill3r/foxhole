@@ -123,6 +123,102 @@ namespace foxhole
         }
 
         [WebMethod(EnableSession = true)]
+        public BarData[] GetBarData()
+        {
+            //LOGIC: get all questions without their answers first
+            DataTable sqlDt = new DataTable("response");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //select all the questions *this wont iclude wrong answers*
+            string sqlSelect = "SELECT sID, AVG(answer), EXTRACT(MONTH FROM date)as surveyMonth, EXTRACT(YEAR FROM date) as surveyYear FROM response WHERE answer != 'null' GROUP BY EXTRACT(MONTH FROM date)";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            List<BarData> barData = new List<BarData>();
+
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                barData.Add(new BarData
+                {
+                    sID = Convert.ToInt32(sqlDt.Rows[i]["sID"]),
+                    averageAnswer = Convert.ToDecimal(sqlDt.Rows[i]["AVG(answer)"]),
+                    surveyMonth = Convert.ToInt32(sqlDt.Rows[i]["surveyMonth"]),
+                    surveyYear = Convert.ToInt32(sqlDt.Rows[i]["surveyYear"]),
+                });
+            }
+
+            return barData.ToArray();
+        }
+
+        [WebMethod(EnableSession = true)]
+        public PieData[] GetPieData()
+        {
+            //LOGIC: get all questions without their answers first
+            DataTable sqlDt = new DataTable("response");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //select all the questions *this wont iclude wrong answers*
+            string sqlSelect = "SELECT question.text, survey.sID, survey.qID, answer FROM response, survey, question WHERE response.completed = 1 AND response.sID = survey.sID AND survey.qID = question.qID";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            List<PieData> pieData = new List<PieData>();
+
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                pieData.Add(new PieData
+                {
+                    questionText = Convert.ToString(sqlDt.Rows[i]["text"]),
+                    sID = Convert.ToInt32(sqlDt.Rows[i]["sID"]),
+                    qID = Convert.ToInt32(sqlDt.Rows[i]["qID"]),
+                    answer = Convert.ToInt32(sqlDt.Rows[i]["answer"]),
+                });
+            }
+
+            return pieData.ToArray();
+        }
+
+        [WebMethod(EnableSession = true)]
+        public LineData[] GetLineData()
+        {
+            //LOGIC: get all questions without their answers first
+            DataTable sqlDt = new DataTable("response");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //select all the questions *this wont iclude wrong answers*
+            string sqlSelect = "SELECT survey.qID, survey.sID, survey.date, (SUM(completed)/COUNT(completed)) as ResponseRate FROM response, survey WHERE response.sID = survey.sID GROUP BY date";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            List<LineData> lineData = new List<LineData>();
+
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                lineData.Add(new LineData
+                {
+                    qID = Convert.ToInt32(sqlDt.Rows[i]["qID"]),
+                    sID = Convert.ToInt32(sqlDt.Rows[i]["sID"]),
+                    date = Convert.ToDateTime(sqlDt.Rows[i]["date"]),
+                    ResponseRate = Convert.ToDecimal(sqlDt.Rows[i]["ResponseRate"]),
+                });
+            }
+
+            return lineData.ToArray();
+        }
+
+        [WebMethod(EnableSession = true)]
         public Account[] GetEmployees  ()
         {
             //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!

@@ -46,25 +46,6 @@ function renderHomePage() {
       <button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top" onclick="document.getElementById('loginModal').style.display='block'" style="width:auto;">Login</button>`;
 }
 
-function renderAnalyticsPage() {
-    alert("function working");
-    if (userInfo.admin == 1) {
-        //document.querySelector('#analyticsTab').innerHTML = ''
-        
-         // show the rendered page
-     showPanel('accountTab');
-        
-        
-    }
-    else {
-        window.alert('Not an authorized user');
-    }
-    
-    }
-    
-
-
-
 
 function renderAccountManagementPage() {
   if (userInfo.admin == 1) {
@@ -407,7 +388,7 @@ function getSelectedEmployeesEmails() {
   let recipientEmailString = "";
 
   recipientEmails.map(function (email) {
-    recipientEmailString += email
+      recipientEmailString += email
   })
   return recipientEmailString;
 }
@@ -695,6 +676,64 @@ function GetEmployees() {
     });
 }
 
+function GetBarDatas() {
+    var webMethod = 'AccountServices.asmx/GetBarData';
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        //data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            barData = msg.d;
+            console.log("BAR DATA");
+            console.log(msg.d);
+            return msg.d;
+        },
+        error: function (e) {
+            alert('Error getting questing from API');
+        }
+    });
+}
+function GetPieDatas() {
+    var webMethod = 'AccountServices.asmx/GetPieData';
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        //data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            pieData = msg.d;
+            console.log("PIE DATA");
+            console.log(msg.d);
+            return msg.d;
+        },
+        error: function (e) {
+            alert('Error getting questing from API');
+        }
+    });
+}
+function GetLineDatas() {
+    var webMethod = 'AccountServices.asmx/GetLineData';
+    $.ajax({
+        type: 'POST',
+        url: webMethod,
+        //data: parameters,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            lineData = msg.d;
+            console.log("LINE DATA");
+            console.log(msg.d);
+            return msg.d;
+        },
+        error: function (e) {
+            alert('Error getting questing from API');
+        }
+    });
+}
+
 function GetSurveyQuestions() {
     var webMethod = 'AccountServices.asmx/GetAllSurveyQuestions';
     $.ajax({
@@ -949,6 +988,72 @@ document.querySelector('#create-account-form').addEventListener('submit', functi
 });
 
 
+var barData;
+var pieData;
+var lineData;
+
+
+async function renderAnalyticsPage() {
+    alert("Data Loading (est. 10 secs after clicking this box) **NOTE: Check Console.Log for more interesting loading output, this message will be replaced by a loading window");
+    setAnalyticsData();
+    if (userInfo.admin == 1) {
+        //document.querySelector('#analyticsTab').innerHTML = ''
+        showPanel('analyticsTab');
+        // show the rendered page
+        //setTimeout(function afterThreeSecond() {
+            
+       
+
+        //document.querySelector('#analyticsTab').innerHTML =
+        //    `
+        //<div id="analyticsPage" >
+
+        //        <div style="text-align: center;">
+        //            <input id="analyticsBackButton" value="Back to Surveys" onclick="showPanel('accountTab');" type="button" class="w3-btn w3-indigo w3-large w3-display-topright" href="#" target="_blank" style="width: auto; margin: 5px;">
+        //        </div>
+
+        //        <div class="first2Container">
+        //            <!-- Bar Graph HTML -->
+        //            <div class="halfGraphDiv">
+        //                <h2>
+        //                    Chart 1 (Chart.js)
+        //                </h2>
+        //                <canvas id="chartjs-2" class="chartjs" width="745" height="372" style="display: block; height: 298px; width: 596px;"></canvas>
+
+        //                <!-- Pie Graph HTML -->
+        //                <h2>Chart 2 (Pie Chart)</h2>
+        //                <div id="canvas-holder" style="width:100%">
+        //                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+        //                    <canvas id="chart-area" style="display: block; height: 304px; width: 608px;" width="760" height="380" class="chartjs-render-monitor"></canvas>
+        //                </div>
+        //            </div>
+
+        //        </div>
+
+        //        <!-- Line Chart HTML -->
+        //        <div class='fullGraphDiv'>
+        //            <h2>Chart 3 (Line Chart)</h2>
+        //            <canvas id="line-chart" width="800" height="450"></canvas>
+        //        </div>
+        //    </div>
+        //</div>
+        //`
+        //}, 1000)
+    }
+    else {
+        window.alert('Not an authorized user');
+    }
+
+}
+
+async function setAnalyticsData() {
+    barData = GetBarDatas();
+    pieData = GetPieDatas();
+    lineData = GetLineDatas();
+    UpdateBarData();
+    return;
+}
+
 // Start of Analytics Page JS
 function dateToMonth(datestring) {
 
@@ -959,10 +1064,11 @@ function dateToMonth(datestring) {
     var tempDate = new Date(datestring);
     var tempMonthNum = tempDate.getMonth();
 
-    var tempMonthName = monthArray[tempMonthNum];
+    var tempMonthName = monthArray[tempMonthNum - 1];
 
     return tempMonthName;
 }
+
 
 // Take an array of values, and return an ordered array filled with name value pairs in an ordered sequence of months, with their average scores
 
@@ -981,21 +1087,98 @@ var objArray = [{ response: 1, date: '2013-8' },
 { response: 5, date: '2014-5' },
 { response: 10, date: '2014-6' }];
 
+function UpdateBarData() {
+    
+    setTimeout(function afterThreeSecond() {
+        barDateArray = [];
+    barResponseArray = [];
+        barResponseArray = barData.map(function (item) { return item.averageAnswer });
 
+        pieAnswerArray = pieData.map(function (item) { return item.answer });
+        // Bar Data
+        for (var i = 0; i < barData.length; i++) {
+            var temptext = barDateConversion(barData[i].surveyMonth) + " " + barData[i].surveyYear;
+            barDateArray.push(temptext);
+        }
+        for (var i = 0; i < objArray.length; i++) {
+            removeData(myBarChart);
+        }
+        for (var i = 0; i < barResponseArray.length; i++) {
+            addData(myBarChart, barDateArray[i], barResponseArray[i]);
+        }
+        // Pie Data
+        splitData(pieAnswerArray);
+        for (var i = 0; i < pieChartBuckets.length; i++) {
+            removeData(myPie);
+        }
+        for (var i = 0; i < pieChartBuckets.length; i++) {
+            addData(myPie, pieLabels[i], pieChartBuckets[i]);
+        }
 
-var responseArray = objArray.map(function (item) { return item.response });
-var dateArray = objArray.map(function (item) { return item.date });
+        // Line Data
+        for (var i = 0; i < objArray2.length; i++) {
+            removeData(myLineChart);
+        }
+
+        var lineDateArray = [];
+        var tempDate;
+        for (var i = 0; i < lineData.length; i++) {
+            tempDate = new Date(parseInt(lineData[i].date.substring(6)))
+            tempDate = tempDate.toDateString();
+            lineDateArray.push(tempDate);
+        }
+        for (var i = 0; i < lineData.length; i++) {
+            addData(myLineChart, lineDateArray[i], lineData[i].ResponseRate * 100);
+        }
+        alert("Data Finished Loading");
+    }, 7000)
+}
+
+function barDateConversion(monthNum) {
+    var monthArray = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+
+    var tempMonthName = monthArray[monthNum - 1];
+
+    return tempMonthName;
+
+    //var barDateArray = [];
+    //var temptext;
+    //for (var i = 0; i < barData.length; i++)
+    //{ 
+    //    temptext = barData[i].surveyMonth + "-" + barData[i].surveyYear;
+    //    barDateArray.push(temptext)
+    //}
+    //return barDateArray;
+}
+
+function addData(chart, label, data) {
+    chart.data.labels.push(label);
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(data);
+    });
+    chart.update();
+}
+
+function removeData(chart) {
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+    });
+    chart.update();
+}
+
+var barResponseArray = objArray.map(function (item) { return item.response });
+var barDateArray = objArray.map(function (item) { return item.date });
 
 var monthArray = [];
-for (var i = 0; i < dateArray.length; i++) {
-    var temp = dateToMonth(dateArray[i]);
+for (var i = 0; i < barDateArray.length; i++) {
+    var temp = dateToMonth(barDateArray[i]);
     monthArray.push(temp);
 }
 
 
-console.log(monthArray)
-
-new Chart(document.getElementById("chartjs-2"),
+var myBarChart = new Chart(document.getElementById("chartjs-2"),
     {
         "type": "bar",
         "data": {
@@ -1003,7 +1186,7 @@ new Chart(document.getElementById("chartjs-2"),
             "datasets": [{
                 "label": "Average Question Response",
                 // The values displayed on the graph
-                "data": responseArray,
+                "data": barResponseArray,
                 // Transparent background for the bars instead of filled
                 "fill": false,
                 // Adds each individual background color for the bars
@@ -1020,20 +1203,25 @@ new Chart(document.getElementById("chartjs-2"),
 
 
 
-
-
 // Pie Chart JS
 
-// This creates one array value (for the sum) which gets 
+// Separates the data into buckets based on value
+var pieLabels = [
+    'Very Low: (1-2)',
+    'Low: (3-4)',
+    'Medium: (5-6)',
+    'High: (7-8)',
+    'Very High: (9-10)',
+    'Did not answer'
+]
+
 var pieChartBuckets = [0, 0, 0, 0, 0, 0];
 var totalPie = 0;
 function splitData(array) {
-
-
-
+    totalPie = 0;
+    pieChartBuckets = [0, 0, 0, 0, 0, 0];
     for (var i = 0; i < array.length; i++) {
         switch (array[i]) {
-
             case 1:
             case 2:
                 pieChartBuckets[0] += array[i];
@@ -1054,6 +1242,7 @@ function splitData(array) {
             case 10:
                 pieChartBuckets[4] += array[i];
                 break;
+            case 0:
             default:
                 pieChartBuckets[5] += array[i];
         }
@@ -1065,6 +1254,8 @@ function splitData(array) {
         totalPie += pieChartBuckets[i];
     }
     for (var i = 0; i < pieChartBuckets.length; i++) {
+        
+
         pieChartBuckets[i] = (pieChartBuckets[i] * 100 / totalPie).toFixed(0);
     }
 
@@ -1074,10 +1265,9 @@ function splitData(array) {
 // 	for (var i = 0; i < array.length; i++)
 // 	{
 // 	}
-splitData(responseArray);
+splitData(barResponseArray);
 
-console.log(responseArray);
-console.log(pieChartBuckets);
+console.log(barResponseArray);
 
 
 var randomScalingFactor = function () {
@@ -1148,7 +1338,7 @@ var objArray2 = [{ ResponseRate: 26, date: '2013-8-17' },
 var result = objArray2.map(objArray2 => objArray2.ResponseRate);
 var dateResult = objArray2.map(objArray2 => objArray2.date);
 console.log(result)
-new Chart(document.getElementById("line-chart"), {
+var myLineChart = new Chart(document.getElementById("line-chart"), {
     type: 'line',
     data: {
         labels: dateResult,

@@ -109,6 +109,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="LineData.cs" />
+    <Compile Include="PieData.cs" />
+    <Compile Include="BarData.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
