@@ -50,17 +50,6 @@ function renderHomePage() {
 function renderAccountManagementPage() {
   if (userInfo.admin == 1) {
     document.querySelector('#manageTab').innerHTML =
-      
-       // <div class="w3-container  w3-display-middle-top">
-       // <h3 class="w3-text-teal">Accounts currently registered with Foxhole</h3>
-       // <div class="w3-right">
-       //   <button onclick="renderAccountPage(userInfo)" id="returnButton">Return to your Account</button>
-       // </div>
-       // <div class="w3-left">
-       //     <button onclick="handleCreateAccountClick(this)" id="createAccountButton">Create new Account</button>
-       // </div>
-       //</div>
-
        `
         <div class="w3-bar w3-indigo w3-card w3-left-align w3-large">
                 <a class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="renderAccountPage(userInfo)" id="-button">
@@ -120,55 +109,6 @@ function renderAccountPage(userInfo) {
 	  </div>
       <br>
 `
-
-        //  `
- 
-    //<div class="w3-top w3-bar w3-indigo w3-card w3-left-align w3-large">
-    //    <a id="home-tab-link" class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="handleLogoffClick()" id="logoff-button">
-    //    Home
-    //    </a>
-    //    <a id="account-tab-link" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAccountManagementPage()" id="manageAccount-button">
-    //    Manage Account
-    //    </a>
-    //</div>
-    //  <div class="w3-container">
-	   //    <div class="w3-center">
-	   //    		<img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:120px">
-	   //  	 	<h1 class="w3-text-teal">hello ${userInfo.userName}</h1>
-	   //    		<button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" onclick="handleCreateSurveyClick(this)" id="createSurveyButton">Create Survey</button>
-	   //    </div> 
-	   //</div>
-	   //<div id="surveyContainer"></div>
-	   //<div class="w3-container">
-	   //   <div class="w3-section">
-	   //      <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
-	   //   </div>
-	   //</div>
-    //  </br>`
-
-        //`<div class="w3-top w3-bar w3-indigo w3-card w3-left-align w3-large">
-        //   <a id="home-tab-link" class="w3-bar-item w3-button w3-padding-large w3-hover-white" onClick="handleLogoffClick()" id="logoff-button">
-        //   Home
-        //   </a>
-        //   <a id="account-tab-link" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAccountManagementPage()" id="manageAccount-button">
-        //   Manage Account
-        //   </a>
-        //</div>
-        //<div class="w3-container">
-        //   <div class="w3-center">
-        //      <img src="http://i.pravatar.cc/300" class="w3-bar-item w3-circle w3-hide-small" style="width:120px">
-        //      <h1 class="w3-text-teal">hello ${userInfo.userName}</h1>
-        //      <button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" onclick="handleCreateSurveyClick(this)" id="createSurveyButton">Create Survey</button>
-        //   </div>
-        //</div>
-        //<div id="surveyContainer"></div>
-        //<div class="w3-container">
-        //   <div class="w3-section">
-        //      <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
-        //   </div>
-        //</div>
-        //</br>`
-
 
     // render the surveys that an employee has not yet responded to
 
@@ -330,13 +270,17 @@ function handleCreateSurveySubmit(e) {
   } else {
     privacy =0
   }
-  let asking_eID = employees[0].eID;
+  console.log(userInfo.eID);
+  let asking_eID = userInfo.eID;
   let d = new Date();
   let datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
 
   let recipients = getSelectedEmployees();
   let recipientEmailAddresses = getSelectedEmployeesEmails();
   showPanel('accountTab');
+
+  // cleanUp
+  document.querySelector('#anonymous').checked = false;
 
   // It doesn't matter if this stuff is slow because it happens behind the scenes
   CreateSurvey(qID, privacy, asking_eID, datestring); // saves to global
@@ -409,72 +353,15 @@ function getSelectedEmployees() {
   return employeeArray;
 }
 
-//function handleUserResponseClick() {
-//    window.alert('user response initiated');
-//    renderUserResponsePage();
-//    showPanel('responseTab');
-//}
 
 function renderUserResponsePage(e) {
   const sID = e.getAttribute("data-sID"); 
-  GetSurvey(sID); // sends a response to the global surveyToTake variable
-  //sleep(5000).then(() => {
-  //  document.querySelector('#responseTab').innerHTML =
-  //    `
-  //      <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
-  //          <div class="w3-card-4">
-  //          <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
-  //          <form id="my-survey-form" class="w3-container">
-  //              <div class="w3-padding-16">
-  //              <label class="w3-text-teal"><b>Question</b></label>
-  //              <p id="questionText">${surveyToTake[0].questionText}</p>
-  //              <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
-  //              <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
-  //              <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
-  //              </div>
-  //              <div class="w3-padding-16">
-  //              <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
-  //              </div> 
-  //          </form>
-  //          </div>
-  //      </div>
-  //      `
-  //  showPanel('responseTab');
-
-    // then render the questions
-  //})
-    
+  GetSurvey(sID); // sends a response to the global surveyToTake variable   
 }
 
 function renderUserResponsePageFromURL(sID) {
-
   GetSurvey(sID); // sends a response to the global surveyToTake variable
-  //sleep(5000).then(() => {
-  //  document.querySelector('#responseTab').innerHTML =
-  //    `
-  //      <div id="userSurvey" class="w3-container w3-display-middle w3-twothird" padding-top: 180px; padding-bottom: 50px;">
-  //          <div class="w3-card-4">
-  //          <div class="w3-container w3-teal"><h2>Survey Response</h2></div>
-  //          <form id="my-survey-form" class="w3-container">
-  //              <div class="w3-padding-16">
-  //              <label class="w3-text-teal"><b>Question</b></label>
-  //              <p id="questionText">${surveyToTake[0].questionText}</p>
-  //              <input id="response" type="range" min="0" max="10" step="1" value="0" oninput="sliderChange(this.value)" class="w3-input w3-border w3-light-grey">
-  //              <p>Response: <b><output id="responseOutput" class="w3-text-red">0</output></b></p>
-  //              <!-- <input id="cq-questionText" class="w3-input w3-border w3-light-grey" type="text"> -->
-  //              </div>
-  //              <div class="w3-padding-16">
-  //              <input id="createQuestionButton" data-sid=${sID} onclick="handleSurveySubmit(this)" type="button" value="submit" class="w3-btn w3-teal" href="#" target="_blank" style="width: 95%; margin: 5px;">
-  //              </div> 
-  //          </form>
-  //          </div>
-  //      </div>
-  //      `
-  //  showPanel('responseTab');
-
-  //  // then render the questions
-  //})
-
+ 
 }
 
 function sliderChange(val) {
@@ -482,12 +369,19 @@ function sliderChange(val) {
 }
 
 function handleSurveySubmit(e) {
+  console.log(e);
+  console.log(surveyToTake[0]);
   let eID = userInfo.eID;
   let sID = parseInt(surveyToTake[0].sID);
   let d = new Date();
   let datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
   let answerValue = parseInt(document.querySelector('#responseOutput').value);
-  let success = SubmitSurveyResponse(eID, sID, answerValue, datestring);
+  // this is where we actually anonymize the response
+  if (surveyToTake[0].privacy == 1) {
+    SubmitAnonSurveyResponse(eID, sID, answerValue, datestring);
+  } else {
+    SubmitSurveyResponse(eID, sID, answerValue, datestring);
+  }
 }
 
 function handleCreateNewQuestionClick() {
@@ -852,6 +746,7 @@ function FillRecipientsTable(recipient_eID, surveyID) {
     dataType: 'json',
     success: function (msg) {
       console.log(msg.d);
+      renderAccountPage(userInfo);
       return msg.d;
     },
     error: function (e) {
@@ -949,6 +844,32 @@ function CreateAccount(userName, password, firstName, lastName, email, position)
 
 function SubmitSurveyResponse(eID, sID, answer, date) {
   var webMethod = 'AccountServices.asmx/SubmitSurveyResponse';
+  var parameters = `{
+    "eID": ${eID},
+    "sID" : ${sID},
+    "answer" : ${answer},
+    "date" : "${encodeURI(date)}"
+  }`;
+  $.ajax({
+    type: 'POST',
+    url: webMethod,
+    data: parameters,
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    success: function (msg) {
+      console.log(msg);
+      document.querySelector('#userSurvey').innerHTML = "";
+      renderAccountPage(userInfo);
+    },
+    error: function (e) {
+      alert('Error submitting survey response');
+      console.log(e);
+    }
+  });
+}
+
+function SubmitAnonSurveyResponse(eID, sID, answer, date) {
+  var webMethod = 'AccountServices.asmx/SubmitAnonSurveyResponse';
   var parameters = `{
     "eID": ${eID},
     "sID" : ${sID},
