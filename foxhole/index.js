@@ -43,7 +43,7 @@ function renderHomePage() {
     ` <h2 class="w3-margin w3-text-indigo">Hi there!</h2>
       <h2 class="w3-margin w3-text-indigo">Welcome to Foxhole</h2>
       <img src="https://openclipart.org/download/279046/Cute-Fox-Without-Background.svg" />
-      <button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top" onclick="document.getElementById('loginModal').style.display='block'" style="width:auto;">Login</button>`;
+      <button class="w3-button w3-round w3-indigo w3-padding-large w3-large w3-margin-top" onclick="document.getElementById('loginModal').style.display='block'" style="width:auto;">Login</button>`;
 }
 
 
@@ -83,27 +83,31 @@ function renderAccountPage(userInfo) {
 	        Logout
 	      </a>
 	      <a class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAccountManagementPage()" id="manageAccount-button">
-	        Manage Account
+	        Manage Accounts
 	      </a>
           <a class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="renderAnalyticsPage()" id="analytics-button">
 	        Analytics
 	      </a>
+          <a class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onClick="handleCreateSurveyClick(this)" id="analytics-button">
+	        Create Survey
+	      </a>
 	    </div>
 	   <div class="w3-container">
 	       <div class="w3-center w3-padding-large" style="margin-top: 20px;">
-	       		<img src="assets/images/img_avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:120px">
-	     	 	<h1 class="w3-text-teal">Hello ${userInfo.firstName}!</h1>
-	       		<button class="w3-button w3-indigo w3-padding-large w3-large w3-margin-top w3-hover-white" onclick="handleCreateSurveyClick(this)" id="createSurveyButton">Create Survey</button>
+	       		<img src="assets/images/img_avatar.png" class="w3-bar-item w3-circle w3-hide-small" style="width:170px">
+	     	 	<h1 class="w3-text-indigo">Hello ${userInfo.firstName}!</h1>
+	       		
 	       </div> 
 	   </div>
 	   <div class="w3-display-container">
-	       <div id="unrespSurvSection" class="w3-container" style="width: 85%; margin:auto">
-              <div id="surveyContainer" class="w3-lightgrey w3-padding-large w3-large" style="margin-top: 10px;">
+	       <div id="unrespSurvSection" class="w3-container w3-indigo w3-round w3-card" style="width: 75%; margin:auto">
+              <div id="surveyContainer" class="w3-lightgrey w3-padding-large w3-large">
                   <header>Unresponded Surveys</header>
               </div>
 	          <div class="">
-	             <ul id="userSurveyList" class="w3-ul w3-card-4 w3-white"></ul>
+	             <ul id="userSurveyList" class="w3-ul w3-white w3-round"></ul>
 	          </div>
+              <footer class="w3-indigo w3-margin"></footer>
 	       </div>	
         </div>
 	  </div>
@@ -132,9 +136,9 @@ function renderUnrespondedSurveys() {
     //let formattedDate;
     document.querySelector('#userSurveyList').innerHTML +=
       `<li class="w3-bar">
-        <span data-sID=${survey.sID} onClick="renderUserResponsePage(this)" class="takeSurveyButton w3-bar-item w3-button w3-xlarge w3-right">
-          <i class="fa fa-reply"></i>
-          <p class="takeSurveyButton w3-small">Take Survey</p>
+        <span data-sID=${survey.sID} onClick="renderUserResponsePage(this)" class="takeSurveyButton w3-bar-item w3-button w3-xlarge w3-right" style="padding: 0;">
+          <i class="fa fa-reply" style="margin:0;"></i>
+          <p class="takeSurveyButton w3-small" style="margin: 0;">Take Survey</p>
         </span>
    
         <div class="w3-bar-item">
