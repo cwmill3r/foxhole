@@ -482,10 +482,10 @@
                 </form>
             </div>
         </div>
-        
+
         <!-- Analytics Page Tab -->
         <div id="analyticsTab" style="visibility: hidden;">
-            <div id="analyticsPage" >
+            <div id="analyticsPage">
 
                 <div style="text-align: center;">
                     <input id="analyticsBackButton" value="Back to Surveys" onclick="showPanel('accountTab');" type="button" class="w3-btn w3-indigo w3-large w3-display-topright" href="#" target="_blank" style="width: auto; margin: 5px;">
@@ -515,6 +515,13 @@
                     <canvas id="line-chart" width="800" height="450"></canvas>
                 </div>
             </div>
+        </div>
+
+        <!-- Analytics Loading Page Tab -->
+        <div id="analyticsLoadingTab" style="visibility: hidden; ">
+            <h1 class="w3-display-topmiddle w3-st" style="margin-top:200px;">Loading Analytics...</h1>
+
+            <progress id="analyticsLoadingBar" class="w3-display-middle" value="0" max="1" style="width:300px; height: 50px;"></progress>
         </div>
 
         <!--<div class="w3-container" id="surveyTab" style="visibility: hidden;">

@@ -17,7 +17,8 @@ const contentPanels = [
   'createQuestionTab',
   'editAccountTab',
   'createAccountTab',
-  'analyticsTab'
+  'analyticsTab',
+  'analyticsLoadingTab'
 ];
  
 // login form submit handler
@@ -585,6 +586,7 @@ function GetBarDatas() {
         success: function (msg) {
             barData = msg.d;
             console.log("BAR DATA");
+            document.getElementById('analyticsLoadingBar').value += 0.4;
             console.log(msg.d);
             return msg.d;
         },
@@ -604,6 +606,7 @@ function GetPieDatas() {
         success: function (msg) {
             pieData = msg.d;
             console.log("PIE DATA");
+            document.getElementById('analyticsLoadingBar').value += 0.3;
             console.log(msg.d);
             return msg.d;
         },
@@ -623,6 +626,7 @@ function GetLineDatas() {
         success: function (msg) {
             lineData = msg.d;
             console.log("LINE DATA");
+            document.getElementById('analyticsLoadingBar').value += 0.3;
             console.log(msg.d);
             return msg.d;
         },
@@ -919,55 +923,59 @@ var lineData;
 
 
 async function renderAnalyticsPage() {
-    alert("Data Loading (est. 10 secs after clicking this box) **NOTE: Check Console.Log for more interesting loading output, this message will be replaced by a loading window");
+    showPanel('analyticsLoadingTab');
     setAnalyticsData();
-    if (userInfo.admin == 1) {
-        //document.querySelector('#analyticsTab').innerHTML = ''
-        showPanel('analyticsTab');
-        // show the rendered page
-        //setTimeout(function afterThreeSecond() {
-            
-       
+    setTimeout(function afterThreeSecond() {
+        if (userInfo.admin == 1) {
+            //document.querySelector('#analyticsTab').innerHTML = ''
+            showPanel('analyticsTab');
 
-        //document.querySelector('#analyticsTab').innerHTML =
-        //    `
-        //<div id="analyticsPage" >
+            document.getElementById('analyticsLoadingBar').value = 0;
+            // show the rendered page
+            //setTimeout(function afterThreeSecond() {
 
-        //        <div style="text-align: center;">
-        //            <input id="analyticsBackButton" value="Back to Surveys" onclick="showPanel('accountTab');" type="button" class="w3-btn w3-indigo w3-large w3-display-topright" href="#" target="_blank" style="width: auto; margin: 5px;">
-        //        </div>
 
-        //        <div class="first2Container">
-        //            <!-- Bar Graph HTML -->
-        //            <div class="halfGraphDiv">
-        //                <h2>
-        //                    Chart 1 (Chart.js)
-        //                </h2>
-        //                <canvas id="chartjs-2" class="chartjs" width="745" height="372" style="display: block; height: 298px; width: 596px;"></canvas>
 
-        //                <!-- Pie Graph HTML -->
-        //                <h2>Chart 2 (Pie Chart)</h2>
-        //                <div id="canvas-holder" style="width:100%">
-        //                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-        //                    <canvas id="chart-area" style="display: block; height: 304px; width: 608px;" width="760" height="380" class="chartjs-render-monitor"></canvas>
-        //                </div>
-        //            </div>
+            //document.querySelector('#analyticsTab').innerHTML =
+            //    `
+            //<div id="analyticsPage" >
 
-        //        </div>
+            //        <div style="text-align: center;">
+            //            <input id="analyticsBackButton" value="Back to Surveys" onclick="showPanel('accountTab');" type="button" class="w3-btn w3-indigo w3-large w3-display-topright" href="#" target="_blank" style="width: auto; margin: 5px;">
+            //        </div>
 
-        //        <!-- Line Chart HTML -->
-        //        <div class='fullGraphDiv'>
-        //            <h2>Chart 3 (Line Chart)</h2>
-        //            <canvas id="line-chart" width="800" height="450"></canvas>
-        //        </div>
-        //    </div>
-        //</div>
-        //`
-        //}, 1000)
-    }
-    else {
-        window.alert('Not an authorized user');
-    }
+            //        <div class="first2Container">
+            //            <!-- Bar Graph HTML -->
+            //            <div class="halfGraphDiv">
+            //                <h2>
+            //                    Chart 1 (Chart.js)
+            //                </h2>
+            //                <canvas id="chartjs-2" class="chartjs" width="745" height="372" style="display: block; height: 298px; width: 596px;"></canvas>
+
+            //                <!-- Pie Graph HTML -->
+            //                <h2>Chart 2 (Pie Chart)</h2>
+            //                <div id="canvas-holder" style="width:100%">
+            //                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+            //                    <canvas id="chart-area" style="display: block; height: 304px; width: 608px;" width="760" height="380" class="chartjs-render-monitor"></canvas>
+            //                </div>
+            //            </div>
+
+            //        </div>
+
+            //        <!-- Line Chart HTML -->
+            //        <div class='fullGraphDiv'>
+            //            <h2>Chart 3 (Line Chart)</h2>
+            //            <canvas id="line-chart" width="800" height="450"></canvas>
+            //        </div>
+            //    </div>
+            //</div>
+            //`
+            //}, 1000)
+        }
+        else {
+            window.alert('Not an authorized user');
+        }
+    }, 7000)
 
 }
 
@@ -1012,6 +1020,9 @@ var objArray = [{ response: 1, date: '2013-8' },
 { response: 5, date: '2014-5' },
 { response: 10, date: '2014-6' }];
 
+
+var pieNonCompletedTotal = 25;
+
 function UpdateBarData() {
     
     setTimeout(function afterThreeSecond() {
@@ -1054,6 +1065,10 @@ function UpdateBarData() {
         }
         for (var i = 0; i < lineData.length; i++) {
             addData(myLineChart, lineDateArray[i], lineData[i].ResponseRate * 100);
+        }
+        pieNonCompletedTotal = 0;
+        for (var i = 0; i < lineData.length; i++) {
+            pieNonCompletedTotal += lineData[i].numNotCompleted;
         }
         alert("Data Finished Loading");
     }, 7000)
@@ -1169,7 +1184,7 @@ function splitData(array) {
                 break;
             case 0:
             default:
-                pieChartBuckets[5] += array[i];
+                pieChartBuckets[5] = pieNonCompletedTotal;
         }
     }
 
