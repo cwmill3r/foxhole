@@ -194,7 +194,7 @@ namespace foxhole
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
             //select all the questions *this wont iclude wrong answers*
-            string sqlSelect = "SELECT survey.qID, survey.sID, survey.date, (SUM(completed)/COUNT(completed)) as ResponseRate FROM response, survey WHERE response.sID = survey.sID GROUP BY date";
+            string sqlSelect = "SELECT survey.qID, survey.sID, survey.date, (SUM(completed)/COUNT(completed)) as ResponseRate, COUNT(case when completed = 1 then 1 end) as numCompleted, COUNT(case when completed = 0 then 0 end) as numNotCompleted FROM response, survey WHERE response.sID = survey.sID GROUP BY date";
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -212,6 +212,8 @@ namespace foxhole
                     sID = Convert.ToInt32(sqlDt.Rows[i]["sID"]),
                     date = Convert.ToDateTime(sqlDt.Rows[i]["date"]),
                     ResponseRate = Convert.ToDecimal(sqlDt.Rows[i]["ResponseRate"]),
+                    numCompleted = Convert.ToInt32(sqlDt.Rows[i]["numCompleted"]),
+                    numNotCompleted = Convert.ToInt32(sqlDt.Rows[i]["numNotCompleted"]),
                 });
             }
 
